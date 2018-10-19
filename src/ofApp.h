@@ -48,6 +48,7 @@ class ofApp : public ofBaseApp {
 		void receiveImage(ofImage &image, int numBytes);
 
 		void sendFile(ofFile file, int fileBytesToSend);
+		void showVwInfo();
 		
 		VisionDeviceKinect2* kinect;
 //		VisionDeviceOpenNi* xtion;

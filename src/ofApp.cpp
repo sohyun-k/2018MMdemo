@@ -350,21 +350,6 @@ void ofApp::draw() {
 
 		if (bkgd_flag)
 			projMeta->draw(headPos, secondUserHandVec);
-
-		ofDrawBitmapString("Camera Position X: " + ofToString(first_imu_data.getCamPosX()), 200, 200);
-		ofDrawBitmapString("Camera Position Y: " + ofToString(first_imu_data.getCamPosY()), 200, 220);
-		ofDrawBitmapString("Camera Position Z: " + ofToString(first_imu_data.getCamPosZ()), 200, 240);
-
-		ofDrawBitmapString("Pitch: " + ofToString(first_imu_data.getPitch()), 200, 280);
-		ofDrawBitmapString("Roll: " + ofToString(first_imu_data.getRoll()), 200, 300);
-		ofDrawBitmapString("Yaw: " + ofToString(first_imu_data.getYaw()), 200, 320);
-
-		ofDrawBitmapString("User Head Depth Position X: " + ofToString(headDepthPos.x), 200, 360);
-		ofDrawBitmapString("User Head Depth Position Y: " + ofToString(headDepthPos.y), 200, 380);
-
-		ofDrawBitmapString("User Head Projection Position X: " + ofToString(headPos.x), 200, 420);
-		ofDrawBitmapString("User Head Projection Position Y: " + ofToString(headPos.y), 200, 440);
-
 	}
 
 	/* Virtual window touch test */
@@ -1090,4 +1075,22 @@ void ofApp::sendFile(ofFile file, int fileBytesToSend)
 	//tcpServer.sendRawBytes(tcpServer.getLastID() - 1, (char*)&file.readToBuffer()[totalBytesSent], fileBytesToSend);
 
 	//atoi(tcpServer.receive(tcpServer.getLastID() - 1));
+}
+
+void ofApp::showVwInfo() {
+
+	ofDrawBitmapString("Camera Position X: " + ofToString(first_imu_data.getCamPosX()), 200, 200);
+	ofDrawBitmapString("Camera Position Y: " + ofToString(first_imu_data.getCamPosY()), 200, 220);
+	ofDrawBitmapString("Camera Position Z: " + ofToString(first_imu_data.getCamPosZ()), 200, 240);
+
+	ofDrawBitmapString("Pitch: " + ofToString(first_imu_data.getPitch()), 200, 280);
+	ofDrawBitmapString("Roll: " + ofToString(first_imu_data.getRoll()), 200, 300);
+	ofDrawBitmapString("Yaw: " + ofToString(first_imu_data.getYaw()), 200, 320);
+
+	ofDrawBitmapString("User Head Depth Position X: " + ofToString(headDepthPos.x), 200, 360);
+	ofDrawBitmapString("User Head Depth Position Y: " + ofToString(headDepthPos.y), 200, 380);
+
+	ofDrawBitmapString("User Head Projection Position X: " + ofToString(headPos.x), 200, 420);
+	ofDrawBitmapString("User Head Projection Position Y: " + ofToString(headPos.y), 200, 440);
+
 }
