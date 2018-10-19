@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "ofApp.h"
 #define IMAGE_SIZE 750000
@@ -14,16 +14,14 @@ void ofApp::setup() {
 
 	font.load("verdana.ttf", 30);
 
-	/* ÃÊ±â ¸Ş´º */
+	/* ì´ˆê¸° ë©”ë‰´ */
 	home = true;
 	vWindow = false;
-	//map = false;
 	bTouchMode = false;
 	bMappingMode = false;
 	bDisplayMode = false;
 	bDrawDragPoints = true;
 	bDrawContents = true;
-	//this->b_warpImgDisplay = false;
 
 	/* tcp network setup */
 	tcpServer.setup(19132, true);
@@ -35,7 +33,6 @@ void ofApp::setup() {
 	kinect = new VisionDeviceKinect2();
 	kinect->setup();
 	kinect->setFlipVertical(true);
-	//kinect->setFlipVertical(false);
 	kinect->setFlipHorizontal(false);
 	kinect->setRefineDepthData(false);
 	
@@ -46,8 +43,6 @@ void ofApp::setup() {
 	bkgd_flag = true;
 
 	///* Virtual window setup */
-	/*viewer.setNearClip(0.1);
-	viewer.setFarClip(20000);*/
 	iPhone->setup();
 	projMeta->setup();
 	skeletonData->setup(kinect);
@@ -70,7 +65,6 @@ void ofApp::setup() {
 	sceneManager.touch = &touch;
 	sceneManager.load();
 	sceneManager.ptSystem = &ptSystem;
-	//sceneManager.enableDrawContents();
 	sceneManager.enableDrawDragPoints();
 
 	/* Image Warping */
@@ -83,9 +77,7 @@ void ofApp::setup() {
 	touch.init(kinect);
 	touch.set(10.0, 20.0);
 	touch.bDrawTouchDebugView = true;
-	//touch.bDrawTouchPoint = true;
 	
-	//sceneManager.changeCurrentScene(4);
 	if (bTouchMode)
 	{
 		sceneManager.changeCurrentScene(4);
@@ -98,20 +90,14 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	//cout << "Flip Vertical = " << kinect->isFlipVertical() << ", Horitonal = "<< kinect->isFlipHoritonzal() << endl;
-
 	/*if (tcpServer.getNumClients() != 0)
 		cout << tcpServer.getLastID() << endl;
 	else
 		cout << "..." << endl;*/
 
-		//string mobileCommand;
 	char *recvText;
 
 	kinect->update();
-	//xtion->update();
-	//touch.visionSet(bTouchMode);
-	//skeletonData->visionSet(vWindow);
 
 	/* send tcp text port connected */
 	/*for (int i = 0; i < tcpText.getNumClients(); i++)
@@ -138,9 +124,8 @@ void ofApp::update() {
 			cout << "MAP NOW ANGLE = " << ptSystem.panAngle << endl;
 			mapScanning.Update();
 
-			//KeyLeft();
 			KeyRight();
-			ofSleepMillis(500); // <-- ¿ø·¡ 500
+			ofSleepMillis(500); // <-- ì›ë˜ 500
 			cout << "MAP KeyRight ANGLE = " << ptSystem.panAngle << endl;
 			if (ptSystem.panAngle > 166)
 			{
@@ -150,7 +135,7 @@ void ofApp::update() {
 				bReadyToReceive = true;
 			}
 
-			cout << "¸Ê µû´Â ÁßÀÔ´Ï´Ù ^^" << endl;
+			cout << "ë§µ ë”°ëŠ” ì¤‘ì…ë‹ˆë‹¤ ^^" << endl;
 		}
 	}
 
@@ -195,11 +180,6 @@ void ofApp::update() {
 	/* new touch update */
 	if (bTouchMode /*|| sceneManager.currentScene->isTouchable*/)
 	{
-		//touch.visionSet(sceneManager.currentScene->isTouchable);
-		//touch.visionSet(true);
-		//touch.bViewFlip = false;
-		//kinect->setFlipVertical(false);
-		//kinect->setFlipHorizontal(true);
 		touch.setCurrentScene(sceneManager.currentScene);
 		touch.update();
 
@@ -251,12 +231,8 @@ void ofApp::update() {
 				}
 				if (b_touch)
 				{
-					/*ptSystem.update(156, 67);
-					display_img_num = 0;
-					touch.init();*/
 					vWindow = true;
 					bTouchMode = false;
-					//touch.bDrawTouchDebugView, touch.bDrawTouchPoint = false;
 					display_img_num = 5;
 					sceneManager.changeCurrentScene(display_img_num);
 					ptSystem.bSceneChange = true;
@@ -279,7 +255,6 @@ void ofApp::update() {
 				{
 					bMappingMode = false;
 					bTouchMode = false;
-					//touch.bDrawTouchDebugView, touch.bDrawTouchPoint = false;
 					bDisplayMode = true;
 					vWindow = false;
 					touch.bTouchStart = false;
@@ -380,14 +355,9 @@ void ofApp::draw() {
 		
 	}
 
-	//if (mapping_mode)
-	// {
 	if (bMappingMode)
 	{
-		//if (b_Mapping)
-		//{
 			mapScanning.Draw();
-		//}
 	}
 	if (bDisplayMode)
 	{
@@ -399,8 +369,8 @@ void ofApp::draw() {
 		}
 	}
 
-	/* text Àü¼Û ¹× ÀÌ¹ÌÁö Àü¼Û ºÎºĞ */
-	/* ÀÌ¹ÌÁö Àü¼Û ÈÄ drawÇÏ´Â ºÎºĞÀº one, two, three, four ºÎºĞ */
+	/* text ì „ì†¡ ë° ì´ë¯¸ì§€ ì „ì†¡ ë¶€ë¶„ */
+	/* ì´ë¯¸ì§€ ì „ì†¡ í›„ drawí•˜ëŠ” ë¶€ë¶„ì€ one, two, three, four ë¶€ë¶„ */
 	for (int i = 0; i < tcpText.getNumClients(); i++)
 	{
 		if (tcpText.isClientConnected(i))
@@ -415,7 +385,6 @@ void ofApp::draw() {
 		if (mobileCommand == "d")
 		{
 			KeyDown();
-			//cout << "DownDownDownDownDownDownDownDownDownDown" << endl;
 			bReadyToReceive = !bReadyToReceive;
 		}
 		else if (mobileCommand == "u")
@@ -454,7 +423,6 @@ void ofApp::draw() {
 		{
 			backgroundA = recvImage;
 			backgroundA.saveImage("scene1_ver2.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('1');
 			bReadyToReceive = true;
 		}
@@ -467,7 +435,6 @@ void ofApp::draw() {
 		{
 			backgroundA = recvImage;
 			backgroundA.saveImage("scene_2.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('3');
 			bReadyToReceive = true;
 		}
@@ -475,7 +442,6 @@ void ofApp::draw() {
 		{
 			backgroundA = recvImage;
 			backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('4');
 			bReadyToReceive = true;
 		}
@@ -497,7 +463,6 @@ void ofApp::draw() {
 	}
 
 	/* new touch code */
-	//if (touchMode)
 	if (bTouchMode /*|| sceneManager.currentScene->isTouchable*/)
 	{
 
@@ -509,9 +474,6 @@ void ofApp::draw() {
 	{
 		touch.draw();
 	}
-	//else {
-	//	touch.clearDT();
-	//}
 }
 
 void ofApp::exit() {
@@ -542,7 +504,6 @@ void ofApp::exit() {
 	ptSystem.exit();
 	sceneManager.save();
 
-	//delete xtion;
 }
 
 //--------------------------------------------------------------
@@ -562,19 +523,11 @@ void ofApp::keyPressed(int key) {
 	}
 	if (key == 't' || key == 'T')
 	{
-		//b_Display = true;
-		//if (!bTouchMode)
-		//{
 			bTouchMode = !bTouchMode;
-			//touch.init(kinect);
 			touch.clearDT();
 			touch_cnt, touch_cnt2 = 0;
-		//}
-		//if(bTouchMode)
-			//touch.init(kinect);
 
 			bMappingMode = false;
-			//bTouchMode = true;
 			bDisplayMode = false;
 			vWindow = false;
 		
@@ -666,7 +619,6 @@ void ofApp::keyPressed(int key) {
 		this->videoWarpingStart = false;
 	}
 	if (key == '1') {
-		//b_Display = true;
 		bMappingMode = false;
 		bTouchMode = false;
 		bDisplayMode = true;
@@ -675,8 +627,8 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		// pan-tilt value°¡ scene.xml¿¡µµ Á¸ÀçÇÏ±â ¶§¹®¿¡ ¾Æ·¡ ÄÚµå´Â ¾È¾²ÀÏ ¼ö ÀÖÀ½ 
-		// È®ÀÎÇØº¸±â
+		// pan-tilt valueê°€ scene.xmlì—ë„ ì¡´ì¬í•˜ê¸° ë•Œë¬¸ì— ì•„ë˜ ì½”ë“œëŠ” ì•ˆì“°ì¼ ìˆ˜ ìˆìŒ 
+		// í™•ì¸í•´ë³´ê¸°
 		//ptSystem.update(128, 127);
 		display_img_num = 0;
 		sceneManager.changeCurrentScene(display_img_num);
@@ -694,8 +646,8 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		// pan-tilt value°¡ scene.xml¿¡µµ Á¸ÀçÇÏ±â ¶§¹®¿¡ ¾Æ·¡ ÄÚµå´Â ¾È¾²ÀÏ ¼ö ÀÖÀ½ 
-		// È®ÀÎÇØº¸±â
+		// pan-tilt valueê°€ scene.xmlì—ë„ ì¡´ì¬í•˜ê¸° ë•Œë¬¸ì— ì•„ë˜ ì½”ë“œëŠ” ì•ˆì“°ì¼ ìˆ˜ ìˆìŒ 
+		// í™•ì¸í•´ë³´ê¸°
 		//ptSystem.update(80, 127);
 		display_img_num = 1;
 		sceneManager.changeCurrentScene(display_img_num);
@@ -714,8 +666,8 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		// pan-tilt value°¡ scene.xml¿¡µµ Á¸ÀçÇÏ±â ¶§¹®¿¡ ¾Æ·¡ ÄÚµå´Â ¾È¾²ÀÏ ¼ö ÀÖÀ½ 
-		// È®ÀÎÇØº¸±â
+		// pan-tilt valueê°€ scene.xmlì—ë„ ì¡´ì¬í•˜ê¸° ë•Œë¬¸ì— ì•„ë˜ ì½”ë“œëŠ” ì•ˆì“°ì¼ ìˆ˜ ìˆìŒ 
+		// í™•ì¸í•´ë³´ê¸°
 		//ptSystem.update(94, 117);
 
 		display_img_num = 2;
@@ -734,8 +686,8 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		// pan-tilt value°¡ scene.xml¿¡µµ Á¸ÀçÇÏ±â ¶§¹®¿¡ ¾Æ·¡ ÄÚµå´Â ¾È¾²ÀÏ ¼ö ÀÖÀ½ 
-		// È®ÀÎÇØº¸±â
+		// pan-tilt valueê°€ scene.xmlì—ë„ ì¡´ì¬í•˜ê¸° ë•Œë¬¸ì— ì•„ë˜ ì½”ë“œëŠ” ì•ˆì“°ì¼ ìˆ˜ ìˆìŒ 
+		// í™•ì¸í•´ë³´ê¸°
 		//ptSystem.update(128, 127);
 
 		display_img_num = 3;
@@ -782,11 +734,11 @@ void ofApp::keyReleased(int key) {
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
-	// drag point Ãâ·Â ÁßÀÌ¸é Æ÷ÀÎÆ® Á¶Àı
+	// drag point ì¶œë ¥ ì¤‘ì´ë©´ í¬ì¸íŠ¸ ì¡°ì ˆ
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseMoved(x, y);
 
-	// ÅÍÄ¡ ¸ğµå¿¡¼­ ÅÍÄ¡ ¿µ¿ª µğ¹ö±× ºä¿¡ drag point Á¶Àı
+	// í„°ì¹˜ ëª¨ë“œì—ì„œ í„°ì¹˜ ì˜ì—­ ë””ë²„ê·¸ ë·°ì— drag point ì¡°ì ˆ
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mouseMoved(x, y);
 
@@ -799,11 +751,11 @@ void ofApp::mouseMoved(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	// drag point Ãâ·Â ÁßÀÌ¸é Æ÷ÀÎÆ® Á¶Àı
+	// drag point ì¶œë ¥ ì¤‘ì´ë©´ í¬ì¸íŠ¸ ì¡°ì ˆ
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseDragged(x, y, button);
 
-	// ÅÍÄ¡ ¸ğµå¿¡¼­ ÅÍÄ¡ ¿µ¿ª µğ¹ö±× ºä¿¡ drag point Á¶Àı
+	// í„°ì¹˜ ëª¨ë“œì—ì„œ í„°ì¹˜ ì˜ì—­ ë””ë²„ê·¸ ë·°ì— drag point ì¡°ì ˆ
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mouseDragged(x, y, button);
 
@@ -816,7 +768,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 	
 
 
-	/* µª½º ÅÍÄ¡¸¦ À§ÇØ¼­ */
+	/* ëìŠ¤ í„°ì¹˜ë¥¼ ìœ„í•´ì„œ */
 	if (touch_determine > 0) {
 		projMeta->setMovedObjectCoord(
 			touch_determine,
@@ -859,11 +811,11 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-	// drag point Ãâ·Â ÁßÀÌ¸é Æ÷ÀÎÆ® Á¶Àı
+	// drag point ì¶œë ¥ ì¤‘ì´ë©´ í¬ì¸íŠ¸ ì¡°ì ˆ
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mousePressed(x, y, button);
 
-	// ÅÍÄ¡ ¸ğµå¿¡¼­ ÅÍÄ¡ ¿µ¿ª µğ¹ö±× ºä¿¡ drag point Á¶Àı
+	// í„°ì¹˜ ëª¨ë“œì—ì„œ í„°ì¹˜ ì˜ì—­ ë””ë²„ê·¸ ë·°ì— drag point ì¡°ì ˆ
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mousePressed(x, y, button);
 	//cout << "Mouse click  x = " << x << "  y = " << y << endl;
@@ -874,19 +826,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mousePressed(x, y);
 
-	/*static auto last = ofGetElapsedTimeMillis();
-	auto now = ofGetElapsedTimeMillis();
-	if (button == 0) {
-		if (now - last < 500) {
-			viewer.rotate(-viewer.getOrientationEuler().x, viewer.getXAxis());
-		}
-		last = now;
-	}
-
-	previous_x = x;
-	previous_y = y;*/
-
-	/* µª½º ÅÍÄ¡¸¦ À§ÇØ¼­ */
+	/* ëìŠ¤ í„°ì¹˜ë¥¼ ìœ„í•´ì„œ */
 	ofRectangle object_region[6];
 
 	for (int i = 1; i < 6; i++) {
@@ -925,11 +865,11 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-	// drag point Ãâ·Â ÁßÀÌ¸é Æ÷ÀÎÆ® Á¶Àı
+	// drag point ì¶œë ¥ ì¤‘ì´ë©´ í¬ì¸íŠ¸ ì¡°ì ˆ
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseReleased(x, y, button);
 
-	// ÅÍÄ¡ ¸ğµå¿¡¼­ ÅÍÄ¡ ¿µ¿ª µğ¹ö±× ºä¿¡ drag point Á¶Àı
+	// í„°ì¹˜ ëª¨ë“œì—ì„œ í„°ì¹˜ ì˜ì—­ ë””ë²„ê·¸ ë·°ì— drag point ì¡°ì ˆ
 	if (sceneManager.currentScene->isTouchable) {
 		touch.mouseReleased(x, y, button);
 	}
