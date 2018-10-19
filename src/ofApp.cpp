@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #include "ofApp.h"
 #define IMAGE_SIZE 750000
@@ -7,23 +7,20 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	//ofSetVerticalSync(true);
 
 	//tcp.startThread();
 	//tcp.setup(19132);
 
 	font.load("verdana.ttf", 30);
 
-	/* √ ±‚ ∏ﬁ¥∫ */
+	/* Ï¥àÍ∏∞ Î©îÎâ¥ */
 	home = true;
 	vWindow = false;
-	//map = false;
 	bTouchMode = false;
 	bMappingMode = false;
 	bDisplayMode = false;
 	bDrawDragPoints = true;
 	bDrawContents = true;
-	//this->b_warpImgDisplay = false;
 
 	/* tcp network setup */
 	tcpServer.setup(19132, true);
@@ -35,7 +32,6 @@ void ofApp::setup() {
 	kinect = new VisionDeviceKinect2();
 	kinect->setup();
 	kinect->setFlipVertical(true);
-	//kinect->setFlipVertical(false);
 	kinect->setFlipHorizontal(false);
 	kinect->setRefineDepthData(false);
 	
@@ -45,9 +41,7 @@ void ofApp::setup() {
 	skeletonData = new SkeletonFromKinect();
 	bkgd_flag = true;
 
-	///* Virtual window setup */
-	/*viewer.setNearClip(0.1);
-	viewer.setFarClip(20000);*/
+	/* Virtual window setup */
 	iPhone->setup();
 	projMeta->setup();
 	skeletonData->setup(kinect);
@@ -70,7 +64,6 @@ void ofApp::setup() {
 	sceneManager.touch = &touch;
 	sceneManager.load();
 	sceneManager.ptSystem = &ptSystem;
-	//sceneManager.enableDrawContents();
 	sceneManager.enableDrawDragPoints();
 
 	/* Image Warping */
@@ -83,9 +76,7 @@ void ofApp::setup() {
 	touch.init(kinect);
 	touch.set(10.0, 20.0);
 	touch.bDrawTouchDebugView = true;
-	//touch.bDrawTouchPoint = true;
 	
-	//sceneManager.changeCurrentScene(4);
 	if (bTouchMode)
 	{
 		sceneManager.changeCurrentScene(4);
@@ -98,20 +89,13 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	//cout << "Flip Vertical = " << kinect->isFlipVertical() << ", Horitonal = "<< kinect->isFlipHoritonzal() << endl;
 
 	/*if (tcpServer.getNumClients() != 0)
 		cout << tcpServer.getLastID() << endl;
 	else
 		cout << "..." << endl;*/
 
-		//string mobileCommand;
-	char *recvText;
-
 	kinect->update();
-	//xtion->update();
-	//touch.visionSet(bTouchMode);
-	//skeletonData->visionSet(vWindow);
 
 	/* send tcp text port connected */
 	/*for (int i = 0; i < tcpText.getNumClients(); i++)
@@ -131,26 +115,21 @@ void ofApp::update() {
 		tcpFile.send(i, "TCP file port number: " + ofToString(tcpFile.getClientPort(i)));
 	}*/
 
+	/* ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩœ∏ÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ */
 	if (bMappingMode)
 	{
 		if (b_Mapping)
 		{
-			cout << "MAP NOW ANGLE = " << ptSystem.panAngle << endl;
 			mapScanning.Update();
 
-			//KeyLeft();
 			KeyRight();
-			ofSleepMillis(500); // <-- ø¯∑° 500
-			cout << "MAP KeyRight ANGLE = " << ptSystem.panAngle << endl;
+			ofSleepMillis(500); // 500 ÔøΩÔøΩÔøΩÔøΩ
 			if (ptSystem.panAngle > 166)
 			{
 				b_Mapping = false;
 				ptSystem.bSceneChange = false;
-
 				bReadyToReceive = true;
 			}
-
-			cout << "∏  µ˚¥¬ ¡ﬂ¿‘¥œ¥Ÿ ^^" << endl;
 		}
 	}
 
@@ -195,11 +174,6 @@ void ofApp::update() {
 	/* new touch update */
 	if (bTouchMode /*|| sceneManager.currentScene->isTouchable*/)
 	{
-		//touch.visionSet(sceneManager.currentScene->isTouchable);
-		//touch.visionSet(true);
-		//touch.bViewFlip = false;
-		//kinect->setFlipVertical(false);
-		//kinect->setFlipHorizontal(true);
 		touch.setCurrentScene(sceneManager.currentScene);
 		touch.update();
 
@@ -251,12 +225,8 @@ void ofApp::update() {
 				}
 				if (b_touch)
 				{
-					/*ptSystem.update(156, 67);
-					display_img_num = 0;
-					touch.init();*/
 					vWindow = true;
 					bTouchMode = false;
-					//touch.bDrawTouchDebugView, touch.bDrawTouchPoint = false;
 					display_img_num = 5;
 					sceneManager.changeCurrentScene(display_img_num);
 					ptSystem.bSceneChange = true;
@@ -279,7 +249,6 @@ void ofApp::update() {
 				{
 					bMappingMode = false;
 					bTouchMode = false;
-					//touch.bDrawTouchDebugView, touch.bDrawTouchPoint = false;
 					bDisplayMode = true;
 					vWindow = false;
 					touch.bTouchStart = false;
@@ -350,21 +319,6 @@ void ofApp::draw() {
 
 		if (bkgd_flag)
 			projMeta->draw(headPos, secondUserHandVec);
-
-		ofDrawBitmapString("Camera Position X: " + ofToString(first_imu_data.getCamPosX()), 200, 200);
-		ofDrawBitmapString("Camera Position Y: " + ofToString(first_imu_data.getCamPosY()), 200, 220);
-		ofDrawBitmapString("Camera Position Z: " + ofToString(first_imu_data.getCamPosZ()), 200, 240);
-
-		ofDrawBitmapString("Pitch: " + ofToString(first_imu_data.getPitch()), 200, 280);
-		ofDrawBitmapString("Roll: " + ofToString(first_imu_data.getRoll()), 200, 300);
-		ofDrawBitmapString("Yaw: " + ofToString(first_imu_data.getYaw()), 200, 320);
-
-		ofDrawBitmapString("User Head Depth Position X: " + ofToString(headDepthPos.x), 200, 360);
-		ofDrawBitmapString("User Head Depth Position Y: " + ofToString(headDepthPos.y), 200, 380);
-
-		ofDrawBitmapString("User Head Projection Position X: " + ofToString(headPos.x), 200, 420);
-		ofDrawBitmapString("User Head Projection Position Y: " + ofToString(headPos.y), 200, 440);
-
 	}
 
 	/* Virtual window touch test */
@@ -380,14 +334,9 @@ void ofApp::draw() {
 		
 	}
 
-	//if (mapping_mode)
-	// {
 	if (bMappingMode)
 	{
-		//if (b_Mapping)
-		//{
 			mapScanning.Draw();
-		//}
 	}
 	if (bDisplayMode)
 	{
@@ -399,8 +348,8 @@ void ofApp::draw() {
 		}
 	}
 
-	/* text ¿¸º€ π◊ ¿ÃπÃ¡ˆ ¿¸º€ ∫Œ∫– */
-	/* ¿ÃπÃ¡ˆ ¿¸º€ »ƒ draw«œ¥¬ ∫Œ∫–¿∫ one, two, three, four ∫Œ∫– */
+	/* text Ï†ÑÏÜ° Î∞è Ïù¥ÎØ∏ÏßÄ Ï†ÑÏÜ° Î∂ÄÎ∂Ñ */
+	/* Ïù¥ÎØ∏ÏßÄ Ï†ÑÏÜ° ÌõÑ drawÌïòÎäî Î∂ÄÎ∂ÑÏùÄ one, two, three, four Î∂ÄÎ∂Ñ */
 	for (int i = 0; i < tcpText.getNumClients(); i++)
 	{
 		if (tcpText.isClientConnected(i))
@@ -415,7 +364,6 @@ void ofApp::draw() {
 		if (mobileCommand == "d")
 		{
 			KeyDown();
-			//cout << "DownDownDownDownDownDownDownDownDownDown" << endl;
 			bReadyToReceive = !bReadyToReceive;
 		}
 		else if (mobileCommand == "u")
@@ -454,7 +402,6 @@ void ofApp::draw() {
 		{
 			backgroundA = recvImage;
 			backgroundA.saveImage("scene1_ver2.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('1');
 			bReadyToReceive = true;
 		}
@@ -467,7 +414,6 @@ void ofApp::draw() {
 		{
 			backgroundA = recvImage;
 			backgroundA.saveImage("scene_2.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('3');
 			bReadyToReceive = true;
 		}
@@ -475,7 +421,6 @@ void ofApp::draw() {
 		{
 			backgroundA = recvImage;
 			backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('4');
 			bReadyToReceive = true;
 		}
@@ -497,7 +442,6 @@ void ofApp::draw() {
 	}
 
 	/* new touch code */
-	//if (touchMode)
 	if (bTouchMode /*|| sceneManager.currentScene->isTouchable*/)
 	{
 
@@ -509,11 +453,9 @@ void ofApp::draw() {
 	{
 		touch.draw();
 	}
-	//else {
-	//	touch.clearDT();
-	//}
 }
 
+//--------------------------------------------------------------
 void ofApp::exit() {
 	if (iPhone)
 	{
@@ -541,8 +483,6 @@ void ofApp::exit() {
 	mapScanning.Exit();
 	ptSystem.exit();
 	sceneManager.save();
-
-	//delete xtion;
 }
 
 //--------------------------------------------------------------
@@ -562,19 +502,11 @@ void ofApp::keyPressed(int key) {
 	}
 	if (key == 't' || key == 'T')
 	{
-		//b_Display = true;
-		//if (!bTouchMode)
-		//{
 			bTouchMode = !bTouchMode;
-			//touch.init(kinect);
 			touch.clearDT();
 			touch_cnt, touch_cnt2 = 0;
-		//}
-		//if(bTouchMode)
-			//touch.init(kinect);
 
 			bMappingMode = false;
-			//bTouchMode = true;
 			bDisplayMode = false;
 			vWindow = false;
 		
@@ -666,7 +598,6 @@ void ofApp::keyPressed(int key) {
 		this->videoWarpingStart = false;
 	}
 	if (key == '1') {
-		//b_Display = true;
 		bMappingMode = false;
 		bTouchMode = false;
 		bDisplayMode = true;
@@ -675,8 +606,8 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		// pan-tilt value∞° scene.xmlø°µµ ¡∏¿Á«œ±‚ ∂ßπÆø° æ∆∑° ƒ⁄µÂ¥¬ æ»æ≤¿œ ºˆ ¿÷¿Ω 
-		// »Æ¿Œ«ÿ∫∏±‚
+		// pan-tilt valueÍ∞Ä scene.xmlÏóêÎèÑ Ï°¥Ïû¨ÌïòÍ∏∞ ÎïåÎ¨∏Ïóê ÏïÑÎûò ÏΩîÎìúÎäî ÏïàÏì∞Ïùº Ïàò ÏûàÏùå 
+		// ÌôïÏù∏Ìï¥Î≥¥Í∏∞
 		//ptSystem.update(128, 127);
 		display_img_num = 0;
 		sceneManager.changeCurrentScene(display_img_num);
@@ -694,8 +625,8 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		// pan-tilt value∞° scene.xmlø°µµ ¡∏¿Á«œ±‚ ∂ßπÆø° æ∆∑° ƒ⁄µÂ¥¬ æ»æ≤¿œ ºˆ ¿÷¿Ω 
-		// »Æ¿Œ«ÿ∫∏±‚
+		// pan-tilt valueÍ∞Ä scene.xmlÏóêÎèÑ Ï°¥Ïû¨ÌïòÍ∏∞ ÎïåÎ¨∏Ïóê ÏïÑÎûò ÏΩîÎìúÎäî ÏïàÏì∞Ïùº Ïàò ÏûàÏùå 
+		// ÌôïÏù∏Ìï¥Î≥¥Í∏∞
 		//ptSystem.update(80, 127);
 		display_img_num = 1;
 		sceneManager.changeCurrentScene(display_img_num);
@@ -714,8 +645,8 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		// pan-tilt value∞° scene.xmlø°µµ ¡∏¿Á«œ±‚ ∂ßπÆø° æ∆∑° ƒ⁄µÂ¥¬ æ»æ≤¿œ ºˆ ¿÷¿Ω 
-		// »Æ¿Œ«ÿ∫∏±‚
+		// pan-tilt valueÍ∞Ä scene.xmlÏóêÎèÑ Ï°¥Ïû¨ÌïòÍ∏∞ ÎïåÎ¨∏Ïóê ÏïÑÎûò ÏΩîÎìúÎäî ÏïàÏì∞Ïùº Ïàò ÏûàÏùå 
+		// ÌôïÏù∏Ìï¥Î≥¥Í∏∞
 		//ptSystem.update(94, 117);
 
 		display_img_num = 2;
@@ -734,8 +665,8 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		// pan-tilt value∞° scene.xmlø°µµ ¡∏¿Á«œ±‚ ∂ßπÆø° æ∆∑° ƒ⁄µÂ¥¬ æ»æ≤¿œ ºˆ ¿÷¿Ω 
-		// »Æ¿Œ«ÿ∫∏±‚
+		// pan-tilt valueÍ∞Ä scene.xmlÏóêÎèÑ Ï°¥Ïû¨ÌïòÍ∏∞ ÎïåÎ¨∏Ïóê ÏïÑÎûò ÏΩîÎìúÎäî ÏïàÏì∞Ïùº Ïàò ÏûàÏùå 
+		// ÌôïÏù∏Ìï¥Î≥¥Í∏∞
 		//ptSystem.update(128, 127);
 
 		display_img_num = 3;
@@ -782,11 +713,11 @@ void ofApp::keyReleased(int key) {
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
-	// drag point √‚∑¬ ¡ﬂ¿Ã∏È ∆˜¿Œ∆Æ ¡∂¿˝
+	// drag point Ï∂úÎ†• Ï§ëÏù¥Î©¥ Ìè¨Ïù∏Ìä∏ Ï°∞Ï†à
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseMoved(x, y);
 
-	// ≈Õƒ° ∏µÂø°º≠ ≈Õƒ° øµø™ µπˆ±◊ ∫‰ø° drag point ¡∂¿˝
+	// ÌÑ∞Ïπò Î™®ÎìúÏóêÏÑú ÌÑ∞Ïπò ÏòÅÏó≠ ÎîîÎ≤ÑÍ∑∏ Î∑∞Ïóê drag point Ï°∞Ï†à
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mouseMoved(x, y);
 
@@ -799,11 +730,11 @@ void ofApp::mouseMoved(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	// drag point √‚∑¬ ¡ﬂ¿Ã∏È ∆˜¿Œ∆Æ ¡∂¿˝
+	// drag point Ï∂úÎ†• Ï§ëÏù¥Î©¥ Ìè¨Ïù∏Ìä∏ Ï°∞Ï†à
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseDragged(x, y, button);
 
-	// ≈Õƒ° ∏µÂø°º≠ ≈Õƒ° øµø™ µπˆ±◊ ∫‰ø° drag point ¡∂¿˝
+	// ÌÑ∞Ïπò Î™®ÎìúÏóêÏÑú ÌÑ∞Ïπò ÏòÅÏó≠ ÎîîÎ≤ÑÍ∑∏ Î∑∞Ïóê drag point Ï°∞Ï†à
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mouseDragged(x, y, button);
 
@@ -813,10 +744,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mouseDragged(x, y);
 
-	
-
-
-	/* µ™Ω∫ ≈Õƒ°∏¶ ¿ß«ÿº≠ */
+	/* ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩƒ°ÔøΩÔøΩ ÔøΩÔøΩÔøΩÿºÔøΩ */
 	if (touch_determine > 0) {
 		projMeta->setMovedObjectCoord(
 			touch_determine,
@@ -826,47 +754,17 @@ void ofApp::mouseDragged(int x, int y, int button) {
 			)
 		);
 	}
-
-	/* Virtual window */
-	if ((vWindow && !bDrawDragPoints) || testVirtual)
-	{
-		int x_offset = x - previous_x;
-		int y_offset = y - previous_y;
-
-		if (button == 0)
-		{
-			float x_scale = (0.75f * 360) / ofGetWidth();
-			float y_scale = (0.75f * 360) / ofGetHeight();
-
-			float panVal = x_offset * x_scale;
-			float tiltVal = -y_offset * y_scale;
-
-			viewer.rotate(panVal, ofVec3f(0, -1 * abs(viewer.getPosition().y), 0));
-			viewer.rotate(tiltVal, viewer.getXAxis());
-		}
-		else if (button == 2)
-		{
-			float x_scale = ((float)1 * 360 / ofGetWidth());
-			float y_scale = ((float)1000 / ofGetHeight());
-
-			float elevationVal = -y_offset * y_scale;
-			viewer.move(0, elevationVal, 0);
-		}
-		previous_x = x;
-		previous_y = y;
-	}
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-	// drag point √‚∑¬ ¡ﬂ¿Ã∏È ∆˜¿Œ∆Æ ¡∂¿˝
+	// drag point Ï∂úÎ†• Ï§ëÏù¥Î©¥ Ìè¨Ïù∏Ìä∏ Ï°∞Ï†à
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mousePressed(x, y, button);
 
-	// ≈Õƒ° ∏µÂø°º≠ ≈Õƒ° øµø™ µπˆ±◊ ∫‰ø° drag point ¡∂¿˝
+	// ÌÑ∞Ïπò Î™®ÎìúÏóêÏÑú ÌÑ∞Ïπò ÏòÅÏó≠ ÎîîÎ≤ÑÍ∑∏ Î∑∞Ïóê drag point Ï°∞Ï†à
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mousePressed(x, y, button);
-	//cout << "Mouse click  x = " << x << "  y = " << y << endl;
 
 	// warping
 	if (this->imgWarpingStart)
@@ -874,19 +772,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mousePressed(x, y);
 
-	/*static auto last = ofGetElapsedTimeMillis();
-	auto now = ofGetElapsedTimeMillis();
-	if (button == 0) {
-		if (now - last < 500) {
-			viewer.rotate(-viewer.getOrientationEuler().x, viewer.getXAxis());
-		}
-		last = now;
-	}
-
-	previous_x = x;
-	previous_y = y;*/
-
-	/* µ™Ω∫ ≈Õƒ°∏¶ ¿ß«ÿº≠ */
+	/* ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩƒ°ÔøΩÔøΩ ÔøΩÔøΩÔøΩÿºÔøΩ */
 	ofRectangle object_region[6];
 
 	for (int i = 1; i < 6; i++) {
@@ -925,11 +811,11 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-	// drag point √‚∑¬ ¡ﬂ¿Ã∏È ∆˜¿Œ∆Æ ¡∂¿˝
+	// drag point Ï∂úÎ†• Ï§ëÏù¥Î©¥ Ìè¨Ïù∏Ìä∏ Ï°∞Ï†à
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseReleased(x, y, button);
 
-	// ≈Õƒ° ∏µÂø°º≠ ≈Õƒ° øµø™ µπˆ±◊ ∫‰ø° drag point ¡∂¿˝
+	// ÌÑ∞Ïπò Î™®ÎìúÏóêÏÑú ÌÑ∞Ïπò ÏòÅÏó≠ ÎîîÎ≤ÑÍ∑∏ Î∑∞Ïóê drag point Ï°∞Ï†à
 	if (sceneManager.currentScene->isTouchable) {
 		touch.mouseReleased(x, y, button);
 	}
@@ -970,12 +856,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 void ofApp::KeyUp()
 {
-#ifdef MINI_VERSION
-	ptSystem.tiltAngle += 2;
-#endif
-#ifdef ORIGINAL_VERSION
 	ptSystem.tiltAngle += 1;
-#endif
 
 	ptSystem.tiltAngle = ptSystem.tiltAngle > ptSystem.Tilt_max ? ptSystem.Tilt_max : ptSystem.tiltAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
@@ -983,18 +864,12 @@ void ofApp::KeyUp()
 		sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle = ptSystem.tiltAngle;
 	}
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltInfo();
 }
 
 void ofApp::KeyDown()
 {
-
-#ifdef MINI_VERSION
-	ptSystem.tiltAngle -= 2;
-#endif
-#ifdef ORIGINAL_VERSION
 	ptSystem.tiltAngle -= 1;
-#endif
 
 	ptSystem.tiltAngle = ptSystem.tiltAngle < ptSystem.Tilt_min ? ptSystem.Tilt_min : ptSystem.tiltAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
@@ -1002,24 +877,12 @@ void ofApp::KeyDown()
 		sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle = ptSystem.tiltAngle;
 	}
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltInfo();
 }
 
 void ofApp::KeyRight()
 {
-
-#ifdef MINI_VERSION
 	ptSystem.panAngle += 2;
-#endif
-#ifdef ORIGINAL_VERSION
-	if (ptSystem.panAngle < ptSystem.Pan_max) {
-		cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
-	}
-	ptSystem.panAngle += 2;
-	if (ptSystem.panAngle < ptSystem.Pan_max) {
-		cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
-	}
-#endif
 
 	if (bTouchMode || bDisplayMode || vWindow)
 	{
@@ -1029,17 +892,12 @@ void ofApp::KeyRight()
 	ptSystem.panAngle = ptSystem.panAngle > ptSystem.Pan_max ? ptSystem.Pan_max : ptSystem.panAngle;
 	
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltInfo();
 }
 
 void ofApp::KeyLeft()
 {
-#ifdef MINI_VERSION
 	ptSystem.panAngle -= 2;
-#endif
-#ifdef ORIGINAL_VERSION
-	ptSystem.panAngle -= 2;
-#endif
 
 	ptSystem.panAngle = ptSystem.panAngle < ptSystem.Pan_min ? ptSystem.Pan_min : ptSystem.panAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
@@ -1047,7 +905,7 @@ void ofApp::KeyLeft()
 		sceneManager.scenes[sceneManager.currentSceneIndex].panAngle = ptSystem.panAngle;
 	}
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltInfo();
 }
 
 void ofApp::receiveCommand(string command)
@@ -1087,7 +945,26 @@ void ofApp::sendFile(ofFile file, int fileBytesToSend)
 	char* fileSize;
 	int totalBytesSent = 0;
 	tcpFile.sendRawBytes(tcpFile.getLastID() - 1, (char*)&file.getFileBuffer()[totalBytesSent], fileBytesToSend);
-	//tcpServer.sendRawBytes(tcpServer.getLastID() - 1, (char*)&file.readToBuffer()[totalBytesSent], fileBytesToSend);
+}
 
-	//atoi(tcpServer.receive(tcpServer.getLastID() - 1));
+void ofApp::showVwInfo() {
+
+	ofDrawBitmapString("Camera Position X: " + ofToString(first_imu_data.getCamPosX()), 200, 200);
+	ofDrawBitmapString("Camera Position Y: " + ofToString(first_imu_data.getCamPosY()), 200, 220);
+	ofDrawBitmapString("Camera Position Z: " + ofToString(first_imu_data.getCamPosZ()), 200, 240);
+
+	ofDrawBitmapString("Pitch: " + ofToString(first_imu_data.getPitch()), 200, 280);
+	ofDrawBitmapString("Roll: " + ofToString(first_imu_data.getRoll()), 200, 300);
+	ofDrawBitmapString("Yaw: " + ofToString(first_imu_data.getYaw()), 200, 320);
+
+	ofDrawBitmapString("User Head Depth Position X: " + ofToString(headDepthPos.x), 200, 360);
+	ofDrawBitmapString("User Head Depth Position Y: " + ofToString(headDepthPos.y), 200, 380);
+
+	ofDrawBitmapString("User Head Projection Position X: " + ofToString(headPos.x), 200, 420);
+	ofDrawBitmapString("User Head Projection Position Y: " + ofToString(headPos.y), 200, 440);
+}
+
+void ofApp::showPanTiltInfo() {
+	cout << "Pan angle: " << ptSystem.panAngle << endl;
+	cout << "Tilt angle: " << ptSystem.tiltAngle << endl << endl;;
 }
