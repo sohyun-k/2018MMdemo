@@ -52,7 +52,6 @@ class ofApp : public ofBaseApp {
 		void showPanTiltInfo();
 		
 		VisionDeviceKinect2* kinect;
-//		VisionDeviceOpenNi* xtion;
 				
 		PanTiltSystem ptSystem;
 				

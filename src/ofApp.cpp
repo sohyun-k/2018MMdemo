@@ -115,7 +115,7 @@ void ofApp::update() {
 		tcpFile.send(i, "TCP file port number: " + ofToString(tcpFile.getClientPort(i)));
 	}*/
 
-	/* �� ���� �����ϸ� ����� ���� */
+	/* 뎁스 터치를 위해 */
 	if (bMappingMode)
 	{
 		if (b_Mapping)
@@ -444,7 +444,6 @@ void ofApp::draw() {
 	/* new touch code */
 	if (bTouchMode /*|| sceneManager.currentScene->isTouchable*/)
 	{
-
 		sceneManager.currentScene->draw(true);
 		touch.draw();
 	}
@@ -515,7 +514,7 @@ void ofApp::keyPressed(int key) {
 		ptSystem.bSceneChange = true;
 		ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
 		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		showPanTiltInfo();
 	}
 	if (bTouchMode || sceneManager.currentScene->isTouchable)
 	{
@@ -614,7 +613,7 @@ void ofApp::keyPressed(int key) {
 		ptSystem.bSceneChange = true;
 		ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
 		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		showPanTiltInfo();
 	}
 	else if (key == '2') {
 		bMappingMode = false;
@@ -633,7 +632,7 @@ void ofApp::keyPressed(int key) {
 		ptSystem.bSceneChange = true;
 		ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
 		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		showPanTiltInfo();
 		sceneManager.currentScene->loadVideoContents();
 	}
 	else if (key == '3') {
@@ -654,7 +653,7 @@ void ofApp::keyPressed(int key) {
 		ptSystem.bSceneChange = true;
 		ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
 		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		showPanTiltInfo();
 	}
 	else if (key == '4') {
 		bMappingMode = false;
@@ -674,10 +673,10 @@ void ofApp::keyPressed(int key) {
 		ptSystem.bSceneChange = true;
 		ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
 		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		showPanTiltInfo();
 	}
 
-	/*warping key*/
+	/* warping key */
 	if (key == 'w' || key == 'W')
 	{
 		this->imgWarpingStart = !this->imgWarpingStart;
@@ -744,7 +743,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mouseDragged(x, y);
 
-	/* ���� ��ġ�� ���ؼ� */
+	/* 뎁스 터치를 위해 */
 	if (touch_determine > 0) {
 		projMeta->setMovedObjectCoord(
 			touch_determine,
@@ -772,7 +771,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mousePressed(x, y);
 
-	/* ���� ��ġ�� ���ؼ� */
+	/* 뎁스 터치를 위해 */
 	ofRectangle object_region[6];
 
 	for (int i = 1; i < 6; i++) {
