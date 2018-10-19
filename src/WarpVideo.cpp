@@ -6,7 +6,6 @@ bool WarpVideo::testVideoSetup(std::vector<string> fileNames)
 
 		ofVideoPlayer ofVideo;
 		ofVideo.loadMovie(this->mobileContentsFileName.at(index) + ".mp4");
-		ofVideo.setVolume(0);
 		this->mobileContentsVideo.push_back(ofVideo);
 
 		// verticeÁ¶Àý
@@ -50,6 +49,7 @@ void WarpVideo::xmlSetup()
 
 void WarpVideo::drawVideo()
 {
+
 	for (int index = 0; index < this->mobileNum; ++index) {
 		ofPoint point[4];
 		point[0].x = this->mobileVertices.at(index).vertices[0].x;
@@ -60,10 +60,12 @@ void WarpVideo::drawVideo()
 		point[2].y = this->mobileVertices.at(index).vertices[2].y;
 		point[3].x = this->mobileVertices.at(index).vertices[3].x;
 		point[3].y = this->mobileVertices.at(index).vertices[3].y;
-		ofVideoPlayer ofVideo = this->mobileContentsVideo.at(index);
-		ofVideo.play();
-		ofVideo.update();
-		ofVideo.getTexture().draw(point[0], point[1], point[2], point[3]);
+
+		this->mobileContentsVideo.at(index).play();
+		this->mobileContentsVideo.at(index).setPaused(this->paused);
+		this->mobileContentsVideo.at(index).setLoopState(ofLoopType::OF_LOOP_NORMAL);
+		this->mobileContentsVideo.at(index).update();
+		this->mobileContentsVideo.at(index).getTexture().draw(point[0], point[1], point[2], point[3]);
 	}
 }
 
@@ -256,4 +258,9 @@ void WarpVideo::mouseReleased(int x, int y)
 		}
 	}
 	this->draw();
+}
+
+void WarpVideo::setPaused(bool paused)
+{
+	this->paused = paused;
 }

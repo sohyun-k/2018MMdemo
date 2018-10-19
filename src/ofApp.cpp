@@ -760,6 +760,7 @@ void ofApp::keyPressed(int key) {
 		this->videoWarpingStart = !this->videoWarpingStart;
 		this->b_warpVideoDisplay = !this->b_warpVideoDisplay;
 		this->videoWarpManager.showDragPoints();
+		this->videoWarpManager.setPaused(!this->videoWarpingStart);
 		this->videoWarpManager.draw();
 	}
 
