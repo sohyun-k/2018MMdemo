@@ -171,64 +171,6 @@ void ofApp::update() {
 
 	float icon_y_min2 = 400.0;
 	float icon_y_max2 = 1000.0;
-	/*float icon_x_min = 430.0;
-	float icon_y_min = 430.0;
-	float icon_x_max = 650.0;
-	float icon_y_max = 900.0;*/
-/*if (touch.warpedTouchPoint.size()!=0)
-	{
-		cout << "Touch cnt = " << touch_cnt << endl;
-		cout << "Touch Point x = " << touch.warpedTouchPoint[0].x << "   y = "  << touch.warpedTouchPoint[0].y << endl;
-		if (icon_x_min < touch.warpedTouchPoint[0].x && touch.warpedTouchPoint[0].x < icon_x_max
-			&& icon_y_min < touch.warpedTouchPoint[0].y && touch.warpedTouchPoint[0].y < icon_y_max)
-		{
-			touch_cnt++;
-		} else if (icon_x_min2 < touch.warpedTouchPoint[0].x && touch.warpedTouchPoint[0].x < icon_x_max2
-			&& icon_y_min2 < touch.warpedTouchPoint[0].y && touch.warpedTouchPoint[0].y < icon_y_max2)
-		{
-			touch_cnt2++;
-		}
-		else {
-			touch_cnt -= 1;
-			touch_cnt2 -= 1;
-			if (touch_cnt <= 0)
-			{
-				touch_cnt = 0;
-			}
-			if (touch_cnt2 <= 0)
-			{
-				touch_cnt2 = 0;
-			}
-		}
-		if (touch_cnt > 5)
-		{
-			b_touch = true;
-		}
-
-		if (b_touch)
-		{
-			ptSystem.update(156, 67);
-			display_img_num = 0;
-			touch.init();
-			b_touch = false;
-			touch_cnt = 0;
-		}
-
-		if (touch_cnt2 > 5)
-		{
-			frame_touch = true;
-		}
-
-		if (frame_touch)
-		{
-			ptSystem.update(82, 64);
-			backGroundImg.loadContents(img_path[2]);
-			display_img_num = 2;
-			touch.init();
-			frame_touch = false;
-			touch_cnt2 = 0;
-		}
-	}*/
 
 	/* Virtual Window */
 	if (vWindow)
@@ -265,6 +207,7 @@ void ofApp::update() {
 		{
 			if (touch.warpedTouchPoint.size() != 0)
 			{
+				
 				cout << "Touch cnt = " << touch_cnt << "Touch cnt2 = " << touch_cnt2 << endl;
 				cout << "Touch Point x = " << touch.warpedTouchPoint[0].x << "   y = " << touch.warpedTouchPoint[0].y << endl;
 				if (touch.warpedTouchPoint.size() == 2) {
@@ -869,32 +812,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mouseDragged(x, y);
 
-	/*int x_offset = x - previous_x;
-	int y_offset = y - previous_y;
-
-	if (button == 0) {
-		// 좌우 회전(Pan) Y축에 대해 / 상하 회전(Tilt) X 축에 대해
-		float x_scale = (0.75f * 360) / ofGetWidth();
-		float y_scale = (0.75f * 360) / ofGetHeight();
-
-		float panVal = x_offset * x_scale;
-		float tiltVal = -y_offset * y_scale;
-
-		viewer.rotate(panVal, ofVec3f(0, -1 * abs(viewer.getPosition().y), 0));
-		viewer.rotate(tiltVal, viewer.getXAxis()); //pitch-
-	}
-	else if (button == 2) {
-		//x_offset은 roll에 매핑
-		float x_scale = ((float)1 * 360) / ofGetWidth();
-		float y_scale = ((float)1000) / ofGetHeight();
-
-		float elevationVal = -y_offset * y_scale;
-		//boom(elevationVal);
-		viewer.move(0, elevationVal, 0);
-	}
-
-	previous_x = x;
-	previous_y = y;*/
+	
 
 
 	/* 뎁스 터치를 위해서 */
