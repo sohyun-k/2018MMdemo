@@ -151,7 +151,7 @@ public:
 
 		ofPopStyle();
 
-		bkgd_image.draw(0, 0, 1920, 1080);
+		//bkgd_image.draw(0, 0, 1920, 1080);
 	}
 
 	/* set the parameter -1 for below, +1 for above */

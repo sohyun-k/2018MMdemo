@@ -34,6 +34,8 @@ public:
 	/************************************************************************/
 	void	changeCurrentScene(int sceneIndex)
 	{
+		touch->bTouchStart = false;
+
 		ofLogNotice("Scene is changed from " + ofToString(currentSceneIndex) + " to " + ofToString(sceneIndex));
 
 		// 이전 Scene의 Touchable 속성은 꺼줌
@@ -49,6 +51,8 @@ public:
 			}
 			currentScene->min = touch->minT;
 			currentScene->max = touch->maxT;
+			currentScene->offsetx = touch->touchPointOffset.x;
+			currentScene->offsety = touch->touchPointOffset.y;
 		}
 
 		// 이전 Scene의 PanTilt 정보 저장
@@ -82,6 +86,7 @@ public:
 			touch->sceneChanged();
 			touch->minT = currentScene->min;
 			touch->maxT = currentScene->max;
+			touch->touchPointOffset.set(currentScene->offsetx, currentScene->offsety);
 		}
 	}
 
@@ -121,6 +126,8 @@ public:
 				}
 				scenes[i].min = settings.getValue("min", 0);
 				scenes[i].max = settings.getValue("max", 0);
+				scenes[i].offsetx = settings.getValue("offsetX", 0);
+				scenes[i].offsety = settings.getValue("offsetY", 0);
 			}
 
 			scenes[i].contentsFileName = settings.getValue("contents","");
@@ -141,6 +148,7 @@ public:
 			}
 			touch->minT = scenes[0].min;
 			touch->maxT = scenes[0].max;
+			touch->touchPointOffset.set(scenes[0].offsetx, scenes[0].offsety);
 		}
 		
 		return true;
@@ -157,6 +165,8 @@ public:
 			}
 			currentScene->min = touch->minT;
 			currentScene->max = touch->maxT;
+			currentScene->offsetx = touch->touchPointOffset.x;
+			currentScene->offsety = touch->touchPointOffset.y;
 		}
 
 		ofxXmlSettings settings;
@@ -188,6 +198,8 @@ public:
 				}
 				settings.addValue("min", scenes[i].min);
 				settings.addValue("max", scenes[i].max);
+				settings.addValue("offsetX", scenes[i].offsetx);
+				settings.addValue("offsetY", scenes[i].offsety);
 			}
 			settings.addValue("contents", scenes[i].contentsFileName);
 			settings.popTag();
