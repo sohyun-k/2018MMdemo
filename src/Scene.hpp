@@ -29,7 +29,8 @@ public:
 	Point2f touchVertices[4];
 	float min;
 	float max;
-
+	float offsetx;
+	float offsety;
 	/************************************************************************/
 	/* Contents 이미지 파일명과 와핑될 이미지								*/
 	/************************************************************************/
@@ -76,8 +77,8 @@ public:
 	}
 
 	void setupVideo(/*string xml_path*/) {
-		
-		
+
+
 		//xmlFileName = xml_path;
 
 		//video.loadMovie("images\\video_1.mp4");
@@ -330,8 +331,8 @@ public:
 		}
 
 	}
-		//////////////////////////////////////////////////////////////////////////
-		//	Drag Point 그리기
+	//////////////////////////////////////////////////////////////////////////
+	//	Drag Point 그리기
 
 	/************************************************************************/
 	/*	calculate a new homography											*/
@@ -352,7 +353,7 @@ public:
 
 		translate = getPerspectiveTransform(src, dst); // Translate 회전행렬 3 by 3
 
-		// 이미지 Warp
+													   // 이미지 Warp
 		cvWarpPerspective(cvContentsImage.getCvImage(), warpImg.getCvImage(), cvTranslate);
 
 		Mat cvContentsImageMat = cvarrToMat(cvContentsImage.getCvImage());
@@ -373,26 +374,27 @@ public:
 	/************************************************************************/
 	/* Drag Point 마우스 컨트롤												*/
 	/************************************************************************/
-	void mouseMoved(int x, int y ){
-		if(bDrawDragPoints){
-			for (int i = 0; i < 4; i++){
+	void mouseMoved(int x, int y) {
+		if (bDrawDragPoints) {
+			for (int i = 0; i < 4; i++) {
 				float diffx = x - vertices[i].x;
 				float diffy = y - vertices[i].y;
 				float dist = sqrt(diffx*diffx + diffy*diffy);
-				if (dist < vertices[i].radius){
+				if (dist < vertices[i].radius) {
 					vertices[i].bOver = true;
-				} else {
+				}
+				else {
 					vertices[i].bOver = false;
-				}	
+				}
 			}
 		}
 	}
 	//--------------------------------------------------------------
-	void mouseDragged(int x, int y, int button){
-		if(bDrawDragPoints)
+	void mouseDragged(int x, int y, int button) {
+		if (bDrawDragPoints)
 		{
-			for (int i = 0; i < 4; i++){
-				if (vertices[i].bBeingDragged == true){
+			for (int i = 0; i < 4; i++) {
+				if (vertices[i].bBeingDragged == true) {
 					vertices[i].x = x;
 					vertices[i].y = y;
 				}
@@ -402,25 +404,26 @@ public:
 	//--------------------------------------------------------------
 	void mousePressed(int x, int y, int button)
 	{
-		if(bDrawDragPoints)
+		if (bDrawDragPoints)
 		{
-			for (int i = 0; i < 4; i++){
+			for (int i = 0; i < 4; i++) {
 				float diffx = x - vertices[i].x;
 				float diffy = y - vertices[i].y;
 				float dist = sqrt(diffx*diffx + diffy*diffy);
-				if (dist < vertices[i].radius){
+				if (dist < vertices[i].radius) {
 					vertices[i].bBeingDragged = true;
-				} else {
+				}
+				else {
 					vertices[i].bBeingDragged = false;
-				}	
+				}
 			}
 		}
 	}
 	//--------------------------------------------------------------
 	void mouseReleased(int x, int y, int button)
 	{
-		for (int i = 0; i < 4; i++){
-			vertices[i].bBeingDragged = false;	
+		for (int i = 0; i < 4; i++) {
+			vertices[i].bBeingDragged = false;
 		}
 		sceneChanged();
 	}

@@ -27,6 +27,12 @@ public:
 	bool bDrawTouchDebugView;
 	bool bClear;
 	bool bDrawTouchPoint;
+	bool bUpdate;
+
+	ofVec2f touchPointOffset;
+	int minThreshold;
+	int maxThreshold;
+
 	VisionDeviceManager* visionDeviceManager;
 	//TouchBGScene* currentScene;
 	Scene* currentScene;
@@ -39,7 +45,7 @@ public:
 	ofRectangle	debugViewport;
 	cv::Size2f debugViewRatio;
 
-	DepthTouch(): bTrain(false), bTouchStart(false), bDrawTouchDebugView(false), bMultifirst(false), bDrawTouchPoint(false), bClear(false)
+	DepthTouch() : bUpdate(false), bTrain(false), bTouchStart(false), bDrawTouchDebugView(false), bMultifirst(false), bDrawTouchPoint(false), bClear(false)
 	{
 		trainCnt = 0;
 		normalizedTouchPoints.clear();
@@ -57,39 +63,31 @@ public:
 		currWTP2.x = 0;
 		currWTP2.y = 0;
 		frameCnt = 0;
-		currMultiPoint.clear();
-		prevMultiPoint.clear();
 	}
-	
+
 	void init(VisionDeviceManager* _visionDeviceManager)
 	{
 		visionDeviceManager = _visionDeviceManager;
+		//visionDeviceManager->setFlipVertical(false);
+		//visionDeviceManager->setFlipHorizontal(true);
 		//bTrain, bTouchStart = false;
 		//bDrawTouchDebugView, bDrawTouchPoint = true;
 		//warpedTouchPoint.clear();
-		clearDT();
+		//clearDT();
 	}
 	void clearDT()
 	{
-		trainCnt = 0;
+		//trainCnt = 0;
 		normalizedTouchPoints.clear();
 		path.clear();									// 2016-02-20
 		originalTouchPoint.clear();
 		warpedTouchPoint.clear();
-		WTP.x = 0;
-		WTP.y = 0;
-		prevWTP.x = 0;
-		prevWTP.y = 0;
-		currWTP.x = 0;
-		currWTP.y = 0;
-		prevWTP2.x = 0;
-		prevWTP2.y = 0;
-		currWTP2.x = 0;
-		currWTP2.y = 0;
-		frameCnt = 0;
-		currMultiPoint.clear();
-		prevMultiPoint.clear();
-		bTrain, bTouchStart, bDrawTouchDebugView, bDrawTouchPoint = false;
+		bTrain = false;
+		bTouchStart = false;
+		visionDeviceManager->setFlipVertical(true);
+		visionDeviceManager->setFlipHorizontal(false);
+		warpdepthRGB.clear();
+		cvDiffImg.clear();
 	}
 	void visionSet(bool bTouch)
 	{
@@ -97,17 +95,17 @@ public:
 		{
 			visionDeviceManager->setFlipVertical(false);
 			visionDeviceManager->setFlipHorizontal(true);
-		} 
+		}
 		else {
 			visionDeviceManager->setFlipVertical(true);
 			visionDeviceManager->setFlipHorizontal(false);
 		}
 	}
 
-	void set(float minThreshold, float maxThreshold)
+	void set()
 	{
-		minT = minThreshold;
-		maxT = maxThreshold;
+		minThreshold = 0;
+		maxThreshold = 0;
 
 		vertices[0].x = 0;
 		vertices[0].y = 0;
@@ -127,17 +125,17 @@ public:
 
 		depthShortMat = visionDeviceManager->getDepthShortMat();
 		colorMat = visionDeviceManager->getColorMat();
-		
+
 		warpMat = Mat(size.height, size.width, depthShortMat.type());
 		touchMat = Mat(size.height, size.width, depthShortMat.type());
 
 		warpDepth = Mat(size.height, size.width, depthShortMat.type());
 		warpColor = Mat(size.height, size.width, colorMat.type());
 
-		currWarpMat = Mat(size.height, size.width, depthShortMat.type());
-		prevWarpMat = Mat(size.height, size.width, depthShortMat.type());
-		addMat = Mat(size.height, size.width, depthShortMat.type());
-		meanMat = Mat(size.height, size.width, depthShortMat.type());
+		//currWarpMat = Mat(size.height, size.width, depthShortMat.type());
+		//prevWarpMat = Mat(size.height, size.width, depthShortMat.type());
+		//addMat = Mat(size.height, size.width, depthShortMat.type());
+		//meanMat = Mat(size.height, size.width, depthShortMat.type());
 		cvDiffImg.allocate(size.width, size.height);
 		diffMapChar = new unsigned char[size.width * size.height];
 
@@ -153,12 +151,10 @@ public:
 		debugViewport.x = ofGetWidth() - debugViewport.width - 20;
 		debugViewport.y = 20;
 
-		debugViewRatio.width = (float)debugViewport.width / (float)visionDeviceManager->getDepthWidth();
+		debugViewRatio.width = ((float)debugViewport.width / (float)visionDeviceManager->getDepthWidth()) - 0.1;
 		debugViewRatio.height = (float)debugViewport.height / (float)visionDeviceManager->getDepthHeight();
-
-		debugViewRatio.width = (float) visionDeviceManager->getDepthHeight()/ (float)visionDeviceManager->getDepthWidth();
-		debugViewRatio.width = (float) 0.831;
-		debugViewRatio.height = (float) 0.9;
+		cout << "debugViewRatio.width = " << debugViewRatio.width << "debugViewRatio.height = " << debugViewRatio.height << endl;
+		touchPointOffset.set(0, 0);
 
 	}
 
@@ -168,43 +164,59 @@ public:
 		sceneChanged();
 	}
 
-	void update()
+	void parameterSetup(float _minThreshold, float _maxThreshold, float _touchPointOffsetx, float _touchPointOffsety)
 	{
-		//visionDeviceManager->setFlipVertical(false);
-		//visionDeviceManager->setFlipHorizontal(true);
+		minT = _minThreshold;
+		maxT = _maxThreshold;
+		touchPointOffset.set(_touchPointOffsetx, _touchPointOffsety);
+	}
+
+	void update(/*float _minThreshold, float _maxThreshold, float _touchPointOffsetx, float _touchPointOffsety*/)
+	{
+		/*minT = _minThreshold;
+		maxT = _maxThreshold;
+		touchPointOffset.set(_touchPointOffsetx, _touchPointOffsety);*/
+
 		//visionSet(true);
 		// 181009 왜 depthShortMat이 제대로 안그려지는지...음..
 		// depthMat이랑 Color는 다 잘 그려지는데
 		// 다시 되네???? 음.. currentScene에서 문제가 생겼나봄
-		colorMat = visionDeviceManager->getColorMat();
+		//if (bUpdate)
+		//{
+		visionDeviceManager->setFlipVertical(false);
+		visionDeviceManager->setFlipHorizontal(true);
+		// color image 너무 큼
+		//colorMat = visionDeviceManager->getColorMat();
 		depthShortMat = visionDeviceManager->getDepthShortMat();
 
 		//colorMat.resize(size.width, size.height);
 		//Mat colorResize;
 		//resize(colorMat, colorResize, Size(size.width, size.height), 0, 0, 1);
 		//colorMat.resize(visionDeviceManager->getDepthWidth(), visionDeviceManager->getDepthHeight());
-		
+
 		//depthShortMat.resize(size.width, size.height);
 		//warpPerspective(colorResize, warpColor, homography, size, INTER_CUBIC);
-		warpPerspective(colorMat, warpColor, homography, size, INTER_CUBIC);
+
+		// 18-10-19 color image 너무 큼
+		//warpPerspective(colorMat, warpColor, homography, size, INTER_CUBIC);
 
 		// DephtShortMat이 제대로 안보일 시에 아래꺼 살리기
 		/*if (bViewFlip)
 		{
-			Mat flipDSM;
-			flip(depthShortMat, flipDSM, 1);
-			warpPerspective(flipDSM, warpMat, homography, size, INTER_CUBIC);
-			warpPerspective(flipDSM, warpDepth, homography, size, INTER_CUBIC);
+		Mat flipDSM;
+		flip(depthShortMat, flipDSM, 1);
+		warpPerspective(flipDSM, warpMat, homography, size, INTER_CUBIC);
+		warpPerspective(flipDSM, warpDepth, homography, size, INTER_CUBIC);
 		}
 		else {*/
-			warpPerspective(depthShortMat, warpMat, homography, size, INTER_CUBIC);
-			warpPerspective(depthShortMat, warpDepth, homography, size, INTER_CUBIC);
+		warpPerspective(depthShortMat, warpMat, homography, size, INTER_CUBIC);
+		warpPerspective(depthShortMat, warpDepth, homography, size, INTER_CUBIC);
 		//}
-		
-		Mat warpdepth8;
-		depth162depth8Color(warpDepth, warpdepth8, 500, 1500);
-		warpdepthRGB.setFromPixels(warpdepth8.data, size.width, size.height, OF_IMAGE_COLOR);
 
+		Mat warpdepth8;
+		depth162depth8Color(warpDepth, warpdepth8, 500, 4500);
+		warpdepthRGB.setFromPixels(warpdepth8.data, size.width, size.height, OF_IMAGE_COLOR);
+		//	}
 		if (bTrain) {
 			ofLogNotice("KinectTouch: Training...");
 			trainedMat = warpMat.clone();
@@ -214,7 +226,7 @@ public:
 
 		if (bTouchStart)
 		{
-			for (int i = 0; i<size.width * size.height; i++) {
+			for (int i = 0; i < size.width * size.height; i++) {
 				ushort v2 = trainedMat.at<ushort>(i);
 				ushort v1 = warpMat.at<ushort>(i);
 				ushort v3 = touchMat.at<ushort>(i);
@@ -228,7 +240,7 @@ public:
 			}
 
 			cvDiffImg.setFromPixels(diffMapChar, size.width, size.height);
-			contourFinder.findContours(cvDiffImg, 500, size.width*size.height*0.5, 2, false, false); // touch되는 영역 contour finder
+			contourFinder.findContours(cvDiffImg, 500, size.width*size.height*0.5, 1, false, false); // touch되는 영역 contour finder
 			normalizedTouchPoints.clear(); // 결과 벡터 클리어
 
 			if (contourFinder.nBlobs > 0) // touch가 되는 순간
@@ -248,7 +260,7 @@ public:
 				if (contourFinder.nBlobs == 2) // multi touch
 				{
 					bMultifirst = true; // 한번이라도 multi touch가 검출 되는 순간 flag on
-					for (int i = 0; i<contourFinder.nBlobs; i++)
+					for (int i = 0; i < contourFinder.nBlobs; i++)
 					{
 						p.set(contourFinder.blobs[i].centroid.x, contourFinder.blobs[i].centroid.y - (contourFinder.blobs[i].boundingRect.height / 2) + 20);
 						p.x /= (double)size.width;
@@ -270,8 +282,45 @@ public:
 			}
 
 			/*if (bTrain)
-				bTrain = false;*/
+			bTrain = false;*/
+			if (bDetect&& normalizedTouchPoints.size() != 0)
+			{
+				originalTouchPoint.clear();
+				for (int i = 0; i < normalizedTouchPoints.size(); ++i)
+				{
+					Point2f OTP(normalizedTouchPoints[i].x, normalizedTouchPoints[i].y);
+					OTP.x *= currentScene->contentsImage.getWidth();
+					OTP.y *= currentScene->contentsImage.getHeight();
+					originalTouchPoint.push_back(OTP);
+				}
+
+				// warping된 view 상에서의 touch point
+				warpedTouchPoint.clear();
+				if (originalTouchPoint.size())
+				{
+					perspectiveTransform(originalTouchPoint, warpedTouchPoint, currentScene->translate);
+					// key press Touch Point offset control
+					warpedTouchPoint[0].x = warpedTouchPoint[0].x + touchPointOffset.x;
+					warpedTouchPoint[0].y = warpedTouchPoint[0].y + touchPointOffset.y;
+				}
+
+				//if (bDetect) 
+				if (warpedTouchPoint.size() != 0)
+				{
+					TouchDecision();
+				}
+				else {
+					frameCnt = 0;
+					prevWTP.x = 0;
+				}
+			}
+			if (!bDetect)
+			{
+				originalTouchPoint.clear();
+				warpedTouchPoint.clear();
+			}
 		}
+
 	}
 
 	void depth162depth8Color(Mat& src, Mat& dest, double minv, double maxv)
@@ -336,7 +385,7 @@ public:
 				float distance;
 				distance = distanceCheck(currWTP.x, currWTP.y, prevWTP.x, prevWTP.y);
 
-				if (distance < 15)
+				if (distance < 30)
 				{
 					Point2f temp;
 					temp = removeShake(currWTP.x, currWTP.y, prevWTP.x, prevWTP.y/*, 15*/);
@@ -429,14 +478,70 @@ public:
 
 	void draw()
 	{
+		//originalTouchPoint.clear();
+		//for (int i = 0; i < normalizedTouchPoints.size(); ++i)
+		//{
+		//	Point2f OTP(normalizedTouchPoints[i].x, normalizedTouchPoints[i].y);
+		//	OTP.x *= currentScene->contentsImage.getWidth();
+		//	OTP.y *= currentScene->contentsImage.getHeight();
+		//	originalTouchPoint.push_back(OTP);
+		//}
+
+		//// warping된 view 상에서의 touch point
+		//warpedTouchPoint.clear();
+		//if (originalTouchPoint.size())
+		//{
+		//	perspectiveTransform(originalTouchPoint, warpedTouchPoint, currentScene->translate);
+		//	// key press Touch Point offset control
+		//	warpedTouchPoint[0].x = warpedTouchPoint[0].x + touchPointOffset.x;
+		//	warpedTouchPoint[0].y = warpedTouchPoint[0].y + touchPointOffset.y;
+		//}
+
+		//if (bDetect) {
+		//	TouchDecision();
+		//}
+		//else {
+		//	frameCnt = 0;
+		//	prevWTP.x = 0;
+		//}
+
+		ofPushStyle();
+		ofFill();
+		ofSetColor(ofColor::red);
+		for (int i = 0; i < warpedTouchPoint.size(); ++i)
+		{
+			ofSetColor(ofColor::red);
+			ofCircle(warpedTouchPoint[0].x, warpedTouchPoint[0].y, 30);					// TODO:
+																						//ofCircle(currWTP.x, currWTP.y, 30);
+			if (warpedTouchPoint.size() == 2) {
+				ofSetColor(ofColor::white);
+				ofCircle(warpedTouchPoint[1].x, warpedTouchPoint[1].y, 30);					// TODO:	
+			}
+		}
+		ofPopStyle();
+
 		if (bDrawTouchDebugView)
 		{
 			// 터치용 Debug Images
 			//==============================
 			warpdepthRGB.draw(debugViewport.x - debugViewport.width, debugViewport.y, debugViewport.width, debugViewport.height);
-			visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
+			//visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
+
 			cvDiffImg.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
 			contourFinder.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
+
+			if (warpedTouchPoint.size() != 0)
+			{
+				ofDrawBitmapString("User Hand Depth Position X: " + ofToString(warpedTouchPoint[0].x), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 60);
+				ofDrawBitmapString("User Hand Depth Position Y: " + ofToString(warpedTouchPoint[0].y), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 80);
+			}
+			ofDrawBitmapString("User Hand Depth Position X offset: " + ofToString(touchPointOffset.x), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 100);
+			ofDrawBitmapString("User Hand Depth Position Y offset: " + ofToString(touchPointOffset.y), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 120);
+			ofDrawBitmapString("Depth touch Min: " + ofToString(minT), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 140);
+			ofDrawBitmapString("Depth touch Max: " + ofToString(maxT), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 160);
+
+			ofDrawBitmapString("width: " + ofToString(debugViewRatio.width), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 180);
+			ofDrawBitmapString("hight: " + ofToString(debugViewRatio.height), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 200);
 
 			//	터치용 Drag Point 그리기
 			//------------------------------
@@ -448,67 +553,73 @@ public:
 				ofVertex(vertices[i].x * debugViewRatio.width + debugViewport.x, vertices[i].y * debugViewRatio.height + debugViewport.y);
 			ofEndShape(true);
 
-			for (int i = 0; i < 4; i++) 
+			for (int i = 0; i < 4; i++)
 			{
 				ofNoFill();
 				ofCircle(vertices[i].x * debugViewRatio.width + debugViewport.x, vertices[i].y * debugViewRatio.height + debugViewport.y, 10);
 
-				if (vertices[i].bOver == true) 
+				if (vertices[i].bOver == true)
 				{
 					ofFill();
 					ofCircle(vertices[i].x * debugViewRatio.width + debugViewport.x, vertices[i].y * debugViewRatio.height + debugViewport.y, 7);
 				}
 			}
 		}
-
-		originalTouchPoint.clear();
-		for (int i = 0; i < normalizedTouchPoints.size(); ++i)
-		{
-			Point2f OTP(normalizedTouchPoints[i].x, normalizedTouchPoints[i].y);
-			OTP.x *= currentScene->contentsImage.getWidth();
-			OTP.y *= currentScene->contentsImage.getHeight();
-			originalTouchPoint.push_back(OTP);
-		}
-
-		// warping된 view 상에서의 touch point
-		warpedTouchPoint.clear();
-		if (originalTouchPoint.size())
-			perspectiveTransform(originalTouchPoint, warpedTouchPoint, currentScene->translate);
-
-		if (bDetect) {
-			TouchDecision();
-		}
-		else {
-			frameCnt = 0;
-			prevWTP.x = 0;
-		}
-
-
-		if (bDrawTouchPoint)
-		{
-			ofPushStyle();
-			ofFill();
-			ofSetColor(ofColor::red);
-			for (int i = 0; i < warpedTouchPoint.size(); ++i)
-			{
-				ofSetColor(ofColor::red);
-				ofCircle(warpedTouchPoint[0].x, warpedTouchPoint[0].y, 30);					// TODO:
-																							//ofCircle(currWTP.x, currWTP.y, 30);
-				if (warpedTouchPoint.size() == 2) {
-					ofSetColor(ofColor::white);
-					ofCircle(warpedTouchPoint[1].x, warpedTouchPoint[1].y, 30);					// TODO:	
-				}
-			}
-			ofPopStyle();
-		}
-
-
 	}
 	void refresh()
 	{
 		clearDT();
 		//bTouchStart = false;
 		bTrain = true;
+	}
+	//void exit()
+	//{
+	//	//visionDeviceManager->exit();
+	//	//delete visionDeviceManager;
+	//	//visionDeviceManager = nullptr;
+	//	depthShortMat.~Mat();
+	//	colorMat.~Mat();
+	//	warpMat.~Mat();
+	//	trainedMat.~Mat();
+	//	warpdepthRGB.~ofImage_();
+	//	viewColor.~ofImage_();
+	//	warpDepth.~Mat();
+	//	warpColor.~Mat();
+	//	clearDT();
+	//	//delete diffMapChar, depthShortMat, colorMat, warpMat, trainedMat, touchMat, warpdepthRGB, viewColor, warpDepth, warpColor;
+	//}
+	// 키보드 제어
+	//==============================
+	void keyPressed(int key)
+	{
+		switch (key) {
+			/*case OF_KEY_LEFT: touchPointOffset.x -= 20; break;
+			case OF_KEY_RIGHT: touchPointOffset.x += 20; break;
+			case OF_KEY_UP: touchPointOffset.y -= 20; break;
+			case OF_KEY_DOWN: touchPointOffset.y += 20; break;
+			case OF_KEY_HOME: minThreshold += 1; break;
+			case OF_KEY_END: minThreshold -= 1; break;
+			case OF_KEY_PAGE_DOWN: maxThreshold += 1; break;
+			case OF_KEY_DEL: maxThreshold -= 1; break;*/
+
+		case OF_KEY_F1: touchPointOffset.x -= 20; break;
+		case OF_KEY_F2: touchPointOffset.x += 20; break;
+		case OF_KEY_F3: touchPointOffset.y -= 20; break;
+		case OF_KEY_F4: touchPointOffset.y += 20; break;
+		case OF_KEY_F5: minT -= 1; break;
+		case OF_KEY_F6: minT += 1; break;
+		case OF_KEY_F7: maxT -= 1; break;
+		case OF_KEY_F8: maxT += 1; break;
+
+			parameterSetup(minT, maxT, touchPointOffset.x, touchPointOffset.y);
+
+			/*case OF_KEY_HOME: debugViewRatio.height += 0.1; break;
+			case OF_KEY_END: debugViewRatio.height -= 0.1; break;
+			case OF_KEY_PAGE_DOWN: debugViewRatio.width += 0.1; break;
+			case OF_KEY_DEL: debugViewRatio.width -= 0.1; break;*/
+
+
+		}
 	}
 	// 마우스 제어
 	//==============================
@@ -573,7 +684,7 @@ public:
 		sceneChanged();
 	}
 
-	private:
+	public:
 		unsigned char *diffMapChar;						// min~max 범위 내의 차영상 -> contour 찾는 대상이 됨
 		Mat depthShortMat;
 		Mat colorMat;
@@ -601,7 +712,7 @@ public:
 		Size		size;
 
 
-		
+
 		bool bMultifirst;
 		bool bDetect;
 		int trainCnt;

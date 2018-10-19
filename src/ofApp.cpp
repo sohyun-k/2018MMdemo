@@ -19,6 +19,7 @@ void ofApp::setup() {
 	bTouchMode = false;
 	bMappingMode = false;
 	bDisplayMode = false;
+	bUIMode = false;
 	bDrawDragPoints = true;
 	bDrawContents = true;
 
@@ -71,16 +72,12 @@ void ofApp::setup() {
 	this->videoWarpManager.testSetup(this->video_test_path);
 
 	display_img_num = 0;
+	touch_determine_cnt = 0;
 
 	/* new touch setup */
 	touch.init(kinect);
-	touch.set(10.0, 20.0);
-	touch.bDrawTouchDebugView = true;
-	
-	if (bTouchMode)
-	{
-		sceneManager.changeCurrentScene(4);
-	}
+	touch.set();
+	touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y);
 
 	cout << "bMappingMode = " << bMappingMode << ", bDisplayMode = " << bDisplayMode << ", bTouchMode = " << bTouchMode << ", bVirtualWinodw = " << vWindow << endl;
 	cout << "touch.bDrawTouchPoint = " << touch.bDrawTouchPoint << ", touch.bDrawTouchDebugView = " << touch.bDrawTouchDebugView << endl;
@@ -89,31 +86,8 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-
-	/*if (tcpServer.getNumClients() != 0)
-		cout << tcpServer.getLastID() << endl;
-	else
-		cout << "..." << endl;*/
-
+	
 	kinect->update();
-
-	/* send tcp text port connected */
-	/*for (int i = 0; i < tcpText.getNumClients(); i++)
-	{
-		tcpText.send(i, "TCP text port number: " + ofToString(tcpText.getClientPort(i)));
-	}*/
-
-	/* send tcp image port connected */
-	/*for (int i = 0; i < tcpImage.getNumClients(); i++)
-	{
-		tcpImage.send(i, "TCP image port number: " + ofToString(tcpImage.getClientPort(i)));
-	}*/
-
-	/* send tcp file port connected */
-	/*for (int i = 0; i < tcpFile.getNumClients(); i++)
-	{
-		tcpFile.send(i, "TCP file port number: " + ofToString(tcpFile.getClientPort(i)));
-	}*/
 
 	/* 뎁스 터치를 위해 */
 	if (bMappingMode)
@@ -123,7 +97,7 @@ void ofApp::update() {
 			mapScanning.Update();
 
 			KeyRight();
-			ofSleepMillis(500); // 500 ����
+			ofSleepMillis(500);
 			if (ptSystem.panAngle > 166)
 			{
 				b_Mapping = false;
@@ -135,7 +109,13 @@ void ofApp::update() {
 
 	if (ptSystem.bSceneChange)
 	{
+		if (!bMappingMode)
+		{
+			ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
+			ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
+		}
 		ptSystem.update(ptSystem.panAngle, ptSystem.tiltAngle);
+		showPanTiltInfo();
 	}
 
 	/* Touch image area */
@@ -154,10 +134,10 @@ void ofApp::update() {
 	/* Virtual Window */
 	if (vWindow)
 	{
-		if (sceneManager.currentScene->isTouchable && touch.bTouchStart)
-		{
-			touch.bTouchStart = false;
-		}
+		//if (sceneManager.currentScene->isTouchable && touch.bTouchStart)
+		//{
+		//	touch.bTouchStart = false;
+		//}
 
 		iPhone->update();
 
@@ -172,111 +152,158 @@ void ofApp::update() {
 	}
 
 	/* new touch update */
-	if (bTouchMode /*|| sceneManager.currentScene->isTouchable*/)
+	if (bTouchMode)
 	{
-		touch.setCurrentScene(sceneManager.currentScene);
+		//touch.setCurrentScene(sceneManager.currentScene);
 		touch.update();
 
-		if (touch.bTouchStart)
+		//if (touch.bTouchStart)
+		//{
+		//	if (touch.warpedTouchPoint.size() != 0)
+		//	{
+		//		
+		//		cout << "Touch cnt = " << touch_cnt << "Touch cnt2 = " << touch_cnt2 << endl;
+		//		cout << "Touch Point x = " << touch.warpedTouchPoint[0].x << "   y = " << touch.warpedTouchPoint[0].y << endl;
+		//		if (touch.warpedTouchPoint.size() == 2) {
+		//			cout << "Touch Point2 x = " << touch.warpedTouchPoint[1].x << "   y = " << touch.warpedTouchPoint[1].y << endl;
+		//		}
+		//		if (icon_x_min < touch.warpedTouchPoint[0].x && touch.warpedTouchPoint[0].x < icon_x_max
+		//			&& icon_y_min < touch.warpedTouchPoint[0].y && touch.warpedTouchPoint[0].y < icon_y_max)
+		//		{
+		//			touch_cnt++;
+		//			touch_cnt2 -= 1;
+		//			if (touch_cnt2 <= 0)
+		//			{
+		//				touch_cnt2 = 0;
+		//			}
+		//		}
+		//		else if (icon_x_min2 < touch.warpedTouchPoint[0].x && touch.warpedTouchPoint[0].x < icon_x_max2
+		//			&& icon_y_min2 < touch.warpedTouchPoint[0].y && touch.warpedTouchPoint[0].y < icon_y_max2)
+		//		{
+		//			touch_cnt -= 1;
+		//			touch_cnt2++;
+		//			if (touch_cnt <= 0)
+		//			{
+		//				touch_cnt = 0;
+		//			}
+		//		}
+		//		else {
+		//			touch_cnt -= 1;
+		//			touch_cnt2 -= 1;
+		//			if (touch_cnt <= 0)
+		//			{
+		//				touch_cnt = 0;
+		//			}
+		//			if (touch_cnt2 <= 0)
+		//			{
+		//				touch_cnt2 = 0;
+		//			}
+		//		}
+		//		if (touch_cnt > 5)
+		//		{
+		//			b_touch = true;
+		//		}
+		//		if (b_touch)
+		//		{
+		//			vWindow = true;
+		//			bTouchMode = false;
+		//			display_img_num = 5;
+		//			sceneManager.changeCurrentScene(display_img_num);
+		//			ptSystem.bSceneChange = true;
+		//			ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
+		//			ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
+		//			cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		//			b_touch = false;
+		//			touch_cnt = 0;
+		//			touch_cnt2 = 0;
+		//			touch.clearDT();
+		//			touch.update();
+		//		}
+
+		//		if (touch_cnt2 > 5)
+		//		{
+		//			frame_touch = true;
+		//		}
+
+		//		if (frame_touch)
+		//		{
+		//			bMappingMode = false;
+		//			bTouchMode = false;
+		//			bDisplayMode = true;
+		//			vWindow = false;
+		//			touch.bTouchStart = false;
+		//			display_img_num = 0;
+		//			sceneManager.changeCurrentScene(display_img_num);
+		//			ptSystem.bSceneChange = true;
+		//			ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
+		//			ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
+		//			cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		//			frame_touch = false;
+		//			touch_cnt = 0;
+		//			touch_cnt2 = 0;
+		//			touch.clearDT();
+		//			touch.update();
+		//		}
+		//	}
+	}
+	else {
+		touch.clearDT();
+	}
+	//}
+
+	//if (sceneManager.currentScene->isTouchable && touch.bTouchStart)
+	//{
+	//	touch.update();
+	//}
+	//else {
+	//	touch.clearDT();
+	//}
+
+	if (vWindow)
+	{
+		if (touch.warpedTouchPoint.size() != 0)
 		{
-			if (touch.warpedTouchPoint.size() != 0)
+			ofRectangle object_region[6];
+			for (int i = 1; i < 6; i++)
 			{
-				
-				cout << "Touch cnt = " << touch_cnt << "Touch cnt2 = " << touch_cnt2 << endl;
-				cout << "Touch Point x = " << touch.warpedTouchPoint[0].x << "   y = " << touch.warpedTouchPoint[0].y << endl;
-				if (touch.warpedTouchPoint.size() == 2) {
-					cout << "Touch Point2 x = " << touch.warpedTouchPoint[1].x << "   y = " << touch.warpedTouchPoint[1].y << endl;
-				}
-				if (icon_x_min < touch.warpedTouchPoint[0].x && touch.warpedTouchPoint[0].x < icon_x_max
-					&& icon_y_min < touch.warpedTouchPoint[0].y && touch.warpedTouchPoint[0].y < icon_y_max)
+				if (projMeta->for_mm_image[i].dirty)
 				{
-					touch_cnt++;
-					touch_cnt2 -= 1;
-					if (touch_cnt2 <= 0)
+					object_region[i].set(
+						projMeta->for_mm_image[i].fixed_point.x,
+						projMeta->for_mm_image[i].fixed_point.y,
+						projMeta->for_mm_image[i].img.getWidth(),
+						projMeta->for_mm_image[i].img.getHeight());
+					if (object_region[i].inside(touch.warpedTouchPoint[0].x, touch.warpedTouchPoint[0].y))
 					{
-						touch_cnt2 = 0;
-					}
-				}
-				else if (icon_x_min2 < touch.warpedTouchPoint[0].x && touch.warpedTouchPoint[0].x < icon_x_max2
-					&& icon_y_min2 < touch.warpedTouchPoint[0].y && touch.warpedTouchPoint[0].y < icon_y_max2)
-				{
-					touch_cnt -= 1;
-					touch_cnt2++;
-					if (touch_cnt <= 0)
-					{
-						touch_cnt = 0;
-					}
-				}
-				else {
-					touch_cnt -= 1;
-					touch_cnt2 -= 1;
-					if (touch_cnt <= 0)
-					{
-						touch_cnt = 0;
-					}
-					if (touch_cnt2 <= 0)
-					{
-						touch_cnt2 = 0;
-					}
-				}
-				if (touch_cnt > 5)
-				{
-					b_touch = true;
-				}
-				if (b_touch)
-				{
-					vWindow = true;
-					bTouchMode = false;
-					display_img_num = 5;
-					sceneManager.changeCurrentScene(display_img_num);
-					ptSystem.bSceneChange = true;
-					ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-					ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-					cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
-					b_touch = false;
-					touch_cnt = 0;
-					touch_cnt2 = 0;
-					touch.clearDT();
-					touch.update();
-				}
 
-				if (touch_cnt2 > 5)
-				{
-					frame_touch = true;
-				}
-
-				if (frame_touch)
-				{
-					bMappingMode = false;
-					bTouchMode = false;
-					bDisplayMode = true;
-					vWindow = false;
-					touch.bTouchStart = false;
-					display_img_num = 0;
-					sceneManager.changeCurrentScene(display_img_num);
-					ptSystem.bSceneChange = true;
-					ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-					ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-					cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
-					frame_touch = false;
-					touch_cnt = 0;
-					touch_cnt2 = 0;
-					touch.clearDT();
-					touch.update();
+						touch_determine_cnt++;
+						if (touch_determine_cnt >= 5)
+						{
+							touch_determine_cnt = 5;
+							touch_determine = i;
+						}
+					}
 				}
 			}
 		}
 		else {
-			touch.clearDT();
+			touch_determine_cnt -= 1;
+			if (touch_determine_cnt < 0)
+			{
+				touch_determine_cnt = 0;
+				touch_determine = -3;
+			}
 		}
-	}
-
-	if (sceneManager.currentScene->isTouchable && touch.bTouchStart)
-	{
-		touch.update();
-	}
-	else {
-		touch.clearDT();
+		if (touch_determine > 0)
+		{
+			projMeta->setMovedObjectCoord(
+				touch_determine,
+				ofPoint(
+					touch.warpedTouchPoint[0].x - projMeta->for_mm_image[touch_determine].img.getWidth() / 2,
+					touch.warpedTouchPoint[0].y - projMeta->for_mm_image[touch_determine].img.getHeight() / 2
+				)
+			);
+		}
 	}
 }
 
@@ -284,6 +311,20 @@ void ofApp::update() {
 void ofApp::draw() {
 	ofEnableAlphaBlending();
 
+	if (bMappingMode || home)
+	{
+		ofBackground(0);
+		//sceneManager.currentScene->drawBackground();
+	}
+	if (/*vWindow || */bUIMode) {
+
+		sceneManager.currentScene->draw(true);
+	}
+	if (testVirtual)
+	{
+		sceneManager.currentScene->draw(true);
+
+	}
 	/* Warping Draw */
 	if (this->b_warpImgDisplay)
 	{
@@ -314,25 +355,27 @@ void ofApp::draw() {
 	/* Virtual window mode */
 	if (vWindow)
 	{
+		sceneManager.currentScene->draw(true);
 		iPhone->draw();
 		skeletonData->draw();
 
 		if (bkgd_flag)
 			projMeta->draw(headPos, secondUserHandVec);
+
 	}
 
 	/* Virtual window touch test */
-	if (testVirtual)
-	{
-		iPhone->draw();
-		skeletonData->draw();
+	//if (testVirtual)
+	//{
+	//	iPhone->draw();
+	//	skeletonData->draw();
 
-		if (bkgd_flag)
-			projMeta->draw(headPos, secondUserHandVec);
+	//	if (bkgd_flag)
+	//		projMeta->draw(headPos, secondUserHandVec);
 
-		projMeta->drawVirtualObjects();
-		
-	}
+	//	projMeta->drawVirtualObjects();
+	//	
+	//}
 
 	if (bMappingMode)
 	{
@@ -432,26 +475,27 @@ void ofApp::draw() {
 	}
 
 	/* Virtual Window */
-	if (vWindow)
-	{
-		iPhone->draw();
-		skeletonData->draw();
+	//if (vWindow)
+	//{
+	//	iPhone->draw();
+	//	skeletonData->draw();
 
-		sceneManager.currentScene->draw(true);
-		projMeta->draw(headPos, secondUserHandVec);
-	}
+	//	sceneManager.currentScene->draw(true);
+	//	projMeta->draw(headPos, secondUserHandVec);
+	//}
 
 	/* new touch code */
 	if (bTouchMode /*|| sceneManager.currentScene->isTouchable*/)
 	{
-		sceneManager.currentScene->draw(true);
+		//sceneManager.currentScene->draw(true);
 		touch.draw();
 	}
 	
-	if (sceneManager.currentScene->isTouchable && touch.bTouchStart)
-	{
-		touch.draw();
-	}
+	//if (sceneManager.currentScene->isTouchable && touch.bTouchStart)
+	//{
+	//	touch.draw();
+	//}
+
 }
 
 //--------------------------------------------------------------
@@ -486,6 +530,26 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+	
+	if (bTouchMode)
+	{
+		touch.keyPressed(key);
+
+		if (key == 'o' || key == 'O')
+		{
+			touch.bDrawTouchDebugView = !touch.bDrawTouchDebugView;
+			//touch.bDrawTouchPoint = !touch.bDrawTouchPoint; /*!touch.bDrawTouchPoint;*/
+		}
+		if (key == '5') {
+			touch.refresh();
+		}
+	}
+
+	if (vWindow)
+	{
+		skeletonData->keyPressed(key);
+		projMeta->keyPressed(key);
+	}
 
 	if (bMappingMode)
 	{
@@ -495,82 +559,88 @@ void ofApp::keyPressed(int key) {
 		}
 	}
 
+	if (key == 't' || key == 'T')
+	{
+		bTouchMode = !bTouchMode;
+		if (!bTouchMode)
+		{
+			touch.clearDT();
+			sceneManager.save();
+			//touch.bTouchStart = false;
+		}
+		else {
+			touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y);
+		}
+	}
 	if (key == 'z' || key == 'Z')
 	{
 		sceneManager.currentScene->isTouchable = !sceneManager.currentScene->isTouchable;
 	}
-	if (key == 't' || key == 'T')
+	if (key == 'u' || key == 'U')
 	{
-			bTouchMode = !bTouchMode;
-			touch.clearDT();
-			touch_cnt, touch_cnt2 = 0;
+		home = false;
+		bMappingMode = false;
+		bDisplayMode = false;
+		vWindow = false;
+		//testVirtual = false;
+		bUIMode = !bUIMode;
 
-			bMappingMode = false;
-			bDisplayMode = false;
-			vWindow = false;
-		
 		display_img_num = 4;
 		sceneManager.changeCurrentScene(display_img_num);
 		ptSystem.bSceneChange = true;
-		ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		showPanTiltInfo();
-	}
-	if (bTouchMode || sceneManager.currentScene->isTouchable)
-	{
-		if (key == 'o' || key == 'O')
+		if (sceneManager.currentScene->isTouchable)
 		{
-			touch.bDrawTouchDebugView = !touch.bDrawTouchDebugView;
-			touch.bDrawTouchPoint = !touch.bDrawTouchPoint; /*!touch.bDrawTouchPoint;*/
-		}
-		if (key == '5') {
-			touch.refresh();
+			touch.setCurrentScene(sceneManager.currentScene);
 		}
 	}
-	if (key == 'c' || key == 'C')
-	{
-		ofVec3f v1((float)(ofGetWindowWidth() / 2 - projMeta->for_mm_image[1].img.getWidth() / 2), (float)(ofGetWindowHeight() / 2 - projMeta->for_mm_image[0].img.getWidth() / 2), 0);
-		bMappingMode = false;
-		bTouchMode = false;
-		bDisplayMode = false;
-		this->b_warpImgDisplay = false;
-		this->imgWarpingStart = false;
-		this->b_warpVideoDisplay = false;
-		this->videoWarpingStart = false;
-		testVirtual = !testVirtual;
-		touch.init(kinect);
-		projMeta->for_mm_image[1].dirty = true;
-		projMeta->for_mm_image[1].fixed_point.set(v1);
-		projMeta->for_mm_image[1].yaw = 0;
-		display_img_num = 6;
-		sceneManager.changeCurrentScene(display_img_num);
-		ptSystem.bSceneChange = true;
-		ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
-	}
+
+	//if (key == 'c' || key == 'C')
+	//{
+	//	ofVec3f v1((float)(ofGetWindowWidth() / 2 - projMeta->for_mm_image[1].img.getWidth() / 2), (float)(ofGetWindowHeight() / 2 - projMeta->for_mm_image[0].img.getWidth() / 2), 0);
+	//	bMappingMode = false;
+	//	bTouchMode = false;
+	//	bDisplayMode = false;
+	//	this->b_warpImgDisplay = false;
+	//	this->imgWarpingStart = false;
+	//	this->b_warpVideoDisplay = false;
+	//	this->videoWarpingStart = false;
+	//	testVirtual = !testVirtual;
+	//	touch.init(kinect);
+	//	projMeta->for_mm_image[1].dirty = true;
+	//	projMeta->for_mm_image[1].fixed_point.set(v1);
+	//	projMeta->for_mm_image[1].yaw = 0;
+	//	display_img_num = 6;
+	//	sceneManager.changeCurrentScene(display_img_num);
+	//	ptSystem.bSceneChange = true;
+	//	ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
+	//	ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
+	//	cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+	//}
+
 	if (key == 'v' || key == 'V')
 	{
+		home = false;
 		bMappingMode = false;
-		bTouchMode = false;
+		//bTouchMode = false;
+		bUIMode = false;
 		bDisplayMode = false;
 		vWindow = true;
 		this->b_warpImgDisplay = false;
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		touch.init(kinect);
+		//touch.init(kinect);
 		display_img_num = 5;
 		sceneManager.changeCurrentScene(display_img_num);
+		if (sceneManager.currentScene->isTouchable)
+		{
+			touch.setCurrentScene(sceneManager.currentScene);
+		}
 		ptSystem.bSceneChange = true;
-		ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
+		/*ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
 		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;*/
 	}
-
-	skeletonData->keyPressed(key);
-	projMeta->keyPressed(key);
-
 	if (key == 's' || key == 'S') {
 		mapScanning.SaveFile("");
 		sceneManager.save();
@@ -590,6 +660,7 @@ void ofApp::keyPressed(int key) {
 		bMappingMode = !bMappingMode;
 		bTouchMode = false;
 		bDisplayMode = false;
+		bUIMode = false;
 		vWindow = false;
 		this->b_warpImgDisplay = false;
 		this->imgWarpingStart = false;
@@ -788,23 +859,6 @@ void ofApp::mousePressed(int x, int y, int button) {
 				touch_determine = i;
 			}
 		}
-	}
-
-	/* Virtual window */
-	if ((vWindow && !bDrawDragPoints)||testVirtual)
-	{
-		static auto last = ofGetElapsedTimeMillis();
-		auto now = ofGetElapsedTimeMillis();
-		if (button == 0)
-		{
-			if (now - last < 500)
-			{
-				viewer.rotate(-viewer.getOrientationEuler().x, viewer.getXAxis());
-			}
-			last = now;
-		}
-		previous_x = x;
-		previous_y = y;
 	}
 }
 

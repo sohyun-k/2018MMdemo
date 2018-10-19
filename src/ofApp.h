@@ -76,6 +76,7 @@ class ofApp : public ofBaseApp {
 		//Mat touchColor;
 		int touch_cnt = 0;
 		int touch_cnt2 = 0;		
+		bool bDrawColorMat;
 
 		bool	bDrawDragPoints;
 		bool	bDrawContents;		
@@ -85,7 +86,7 @@ class ofApp : public ofBaseApp {
 		bool b_Mapping;
 		//bool mapping_mode;
 		
-		bool bTouchMode, bMappingMode, bDisplayMode;
+		bool bTouchMode, bMappingMode, bDisplayMode, bUIMode;
 		
 		//Scene backGroundImg;
 		int num_img = 0;
@@ -130,7 +131,8 @@ class ofApp : public ofBaseApp {
 		int display_img_num;
 
 		int touch_determine;
-		
+		int touch_determine_cnt;
+
 		/* virtual window 변수들 시작 */
 		PhoneToDesktop* iPhone;
 		ProjectorMetaphor* projMeta;
