@@ -13,6 +13,7 @@ private:
 	int mobileNum;
 	bool bDrawDragPoints;
 	bool xmlExists = false;
+	bool paused = true;
 
 	bool testVideoSetup(std::vector<string> fileNames);
 	void xmlSetup();
@@ -31,4 +32,5 @@ public:
 	void mouseDragged(int x, int y);
 	void mousePressed(int x, int y);
 	void mouseReleased(int x, int y);
+	void setPaused(bool paused);
 };
