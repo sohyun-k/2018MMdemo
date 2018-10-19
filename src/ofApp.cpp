@@ -7,7 +7,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	//ofSetVerticalSync(true);
 
 	//tcp.startThread();
 	//tcp.setup(19132);
@@ -45,9 +44,7 @@ void ofApp::setup() {
 	skeletonData = new SkeletonFromKinect();
 	bkgd_flag = true;
 
-	///* Virtual window setup */
-	/*viewer.setNearClip(0.1);
-	viewer.setFarClip(20000);*/
+	/* Virtual window setup */
 	iPhone->setup();
 	projMeta->setup();
 	skeletonData->setup(kinect);
@@ -98,18 +95,13 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	//cout << "Flip Vertical = " << kinect->isFlipVertical() << ", Horitonal = "<< kinect->isFlipHoritonzal() << endl;
 
 	/*if (tcpServer.getNumClients() != 0)
 		cout << tcpServer.getLastID() << endl;
 	else
 		cout << "..." << endl;*/
 
-		//string mobileCommand;
-	char *recvText;
-
 	kinect->update();
-	//xtion->update();
 	//touch.visionSet(bTouchMode);
 	//skeletonData->visionSet(vWindow);
 
@@ -131,26 +123,21 @@ void ofApp::update() {
 		tcpFile.send(i, "TCP file port number: " + ofToString(tcpFile.getClientPort(i)));
 	}*/
 
+	/* 맵 따기 시작하면 여기로 들어옴 */
 	if (bMappingMode)
 	{
 		if (b_Mapping)
 		{
-			cout << "MAP NOW ANGLE = " << ptSystem.panAngle << endl;
 			mapScanning.Update();
 
-			//KeyLeft();
 			KeyRight();
-			ofSleepMillis(500); // <-- 원래 500
-			cout << "MAP KeyRight ANGLE = " << ptSystem.panAngle << endl;
+			ofSleepMillis(500); // 500 기준
 			if (ptSystem.panAngle > 166)
 			{
 				b_Mapping = false;
 				ptSystem.bSceneChange = false;
-
 				bReadyToReceive = true;
 			}
-
-			cout << "맵 따는 중입니다 ^^" << endl;
 		}
 	}
 
@@ -499,6 +486,7 @@ void ofApp::draw() {
 	//}
 }
 
+//--------------------------------------------------------------
 void ofApp::exit() {
 	if (iPhone)
 	{
@@ -526,8 +514,6 @@ void ofApp::exit() {
 	mapScanning.Exit();
 	ptSystem.exit();
 	sceneManager.save();
-
-	//delete xtion;
 }
 
 //--------------------------------------------------------------
@@ -798,9 +784,6 @@ void ofApp::mouseDragged(int x, int y, int button) {
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mouseDragged(x, y);
 
-	
-
-
 	/* 뎁스 터치를 위해서 */
 	if (touch_determine > 0) {
 		projMeta->setMovedObjectCoord(
@@ -810,35 +793,6 @@ void ofApp::mouseDragged(int x, int y, int button) {
 				y - projMeta->for_mm_image[touch_determine].img.getHeight() / 2
 			)
 		);
-	}
-
-	/* Virtual window */
-	if ((vWindow && !bDrawDragPoints) || testVirtual)
-	{
-		int x_offset = x - previous_x;
-		int y_offset = y - previous_y;
-
-		if (button == 0)
-		{
-			float x_scale = (0.75f * 360) / ofGetWidth();
-			float y_scale = (0.75f * 360) / ofGetHeight();
-
-			float panVal = x_offset * x_scale;
-			float tiltVal = -y_offset * y_scale;
-
-			viewer.rotate(panVal, ofVec3f(0, -1 * abs(viewer.getPosition().y), 0));
-			viewer.rotate(tiltVal, viewer.getXAxis());
-		}
-		else if (button == 2)
-		{
-			float x_scale = ((float)1 * 360 / ofGetWidth());
-			float y_scale = ((float)1000 / ofGetHeight());
-
-			float elevationVal = -y_offset * y_scale;
-			viewer.move(0, elevationVal, 0);
-		}
-		previous_x = x;
-		previous_y = y;
 	}
 }
 
@@ -851,25 +805,12 @@ void ofApp::mousePressed(int x, int y, int button) {
 	// 터치 모드에서 터치 영역 디버그 뷰에 drag point 조절
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mousePressed(x, y, button);
-	//cout << "Mouse click  x = " << x << "  y = " << y << endl;
 
 	// warping
 	if (this->imgWarpingStart)
 		this->imgWarpManager.mousePressed(x, y);
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mousePressed(x, y);
-
-	/*static auto last = ofGetElapsedTimeMillis();
-	auto now = ofGetElapsedTimeMillis();
-	if (button == 0) {
-		if (now - last < 500) {
-			viewer.rotate(-viewer.getOrientationEuler().x, viewer.getXAxis());
-		}
-		last = now;
-	}
-
-	previous_x = x;
-	previous_y = y;*/
 
 	/* 뎁스 터치를 위해서 */
 	ofRectangle object_region[6];
@@ -955,12 +896,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 void ofApp::KeyUp()
 {
-#ifdef MINI_VERSION
-	ptSystem.tiltAngle += 2;
-#endif
-#ifdef ORIGINAL_VERSION
 	ptSystem.tiltAngle += 1;
-#endif
 
 	ptSystem.tiltAngle = ptSystem.tiltAngle > ptSystem.Tilt_max ? ptSystem.Tilt_max : ptSystem.tiltAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
@@ -968,18 +904,12 @@ void ofApp::KeyUp()
 		sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle = ptSystem.tiltAngle;
 	}
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltInfo();
 }
 
 void ofApp::KeyDown()
 {
-
-#ifdef MINI_VERSION
-	ptSystem.tiltAngle -= 2;
-#endif
-#ifdef ORIGINAL_VERSION
 	ptSystem.tiltAngle -= 1;
-#endif
 
 	ptSystem.tiltAngle = ptSystem.tiltAngle < ptSystem.Tilt_min ? ptSystem.Tilt_min : ptSystem.tiltAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
@@ -987,24 +917,12 @@ void ofApp::KeyDown()
 		sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle = ptSystem.tiltAngle;
 	}
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltInfo();
 }
 
 void ofApp::KeyRight()
 {
-
-#ifdef MINI_VERSION
 	ptSystem.panAngle += 2;
-#endif
-#ifdef ORIGINAL_VERSION
-	if (ptSystem.panAngle < ptSystem.Pan_max) {
-		cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
-	}
-	ptSystem.panAngle += 2;
-	if (ptSystem.panAngle < ptSystem.Pan_max) {
-		cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
-	}
-#endif
 
 	if (bTouchMode || bDisplayMode || vWindow)
 	{
@@ -1014,17 +932,12 @@ void ofApp::KeyRight()
 	ptSystem.panAngle = ptSystem.panAngle > ptSystem.Pan_max ? ptSystem.Pan_max : ptSystem.panAngle;
 	
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltInfo();
 }
 
 void ofApp::KeyLeft()
 {
-#ifdef MINI_VERSION
 	ptSystem.panAngle -= 2;
-#endif
-#ifdef ORIGINAL_VERSION
-	ptSystem.panAngle -= 2;
-#endif
 
 	ptSystem.panAngle = ptSystem.panAngle < ptSystem.Pan_min ? ptSystem.Pan_min : ptSystem.panAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
@@ -1032,7 +945,7 @@ void ofApp::KeyLeft()
 		sceneManager.scenes[sceneManager.currentSceneIndex].panAngle = ptSystem.panAngle;
 	}
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltInfo();
 }
 
 void ofApp::receiveCommand(string command)
@@ -1072,9 +985,6 @@ void ofApp::sendFile(ofFile file, int fileBytesToSend)
 	char* fileSize;
 	int totalBytesSent = 0;
 	tcpFile.sendRawBytes(tcpFile.getLastID() - 1, (char*)&file.getFileBuffer()[totalBytesSent], fileBytesToSend);
-	//tcpServer.sendRawBytes(tcpServer.getLastID() - 1, (char*)&file.readToBuffer()[totalBytesSent], fileBytesToSend);
-
-	//atoi(tcpServer.receive(tcpServer.getLastID() - 1));
 }
 
 void ofApp::showVwInfo() {
@@ -1092,5 +1002,9 @@ void ofApp::showVwInfo() {
 
 	ofDrawBitmapString("User Head Projection Position X: " + ofToString(headPos.x), 200, 420);
 	ofDrawBitmapString("User Head Projection Position Y: " + ofToString(headPos.y), 200, 440);
+}
 
+void ofApp::showPanTiltInfo() {
+	cout << "Pan angle: " << ptSystem.panAngle << endl;
+	cout << "Tilt angle: " << ptSystem.tiltAngle << endl << endl;;
 }
