@@ -165,10 +165,7 @@ void ofApp::update() {
 	{
 		touch.update();	
 	}
-	/*else {
-		touch.clearDT();
-	}*/
-
+	/* virtual window object moving using the spatial touch */
 	if (vWindow)
 	{
 		if (touch.warpedTouchPoint.size() != 0)
