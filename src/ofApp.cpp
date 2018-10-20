@@ -443,6 +443,22 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+	
+	if (key == 't' || key == 'T')
+	{
+		touch.clearDT();
+		bTouchMode = !bTouchMode;
+		if (!bTouchMode)
+		{
+			touch.bDrawTouchDebugView = false;
+			sceneManager.save();
+			//touch.bTouchStart = false;
+		}
+		else {
+			touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y);
+		}
+	}
+	
 	if (bTouchMode)
 	{
 		touch.keyPressed(key);
@@ -478,21 +494,6 @@ void ofApp::keyPressed(int key) {
 		if (key == ' ') {
 			ptSystem.update(PAN_DEFAULT, 127);
 			b_Mapping = !b_Mapping;
-		}
-	}
-
-	if (key == 't' || key == 'T')
-	{
-		bTouchMode = !bTouchMode;
-		if (!bTouchMode)
-		{
-			touch.clearDT();
-			touch.bDrawTouchDebugView = false;
-			sceneManager.save();
-			//touch.bTouchStart = false;
-		}
-		else {
-			touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y);
 		}
 	}
 	if (key == 'z' || key == 'Z')
