@@ -97,13 +97,10 @@ void ofApp::update() {
 	{
 		if (b_Mapping)
 		{
-			//cout << "MAP NOW ANGLE = " << ptSystem.panAngle << endl;
 			mapScanning.Update();
 
-			//KeyLeft();
 			KeyRight();
-			ofSleepMillis(500); // <-- 원래 500
-			cout << "MAP KeyRight ANGLE = " << ptSystem.panAngle << endl;
+			ofSleepMillis(500);
 			if (ptSystem.panAngle >= ptSystem.Pan_max)
 			{
 				b_Mapping = false;
@@ -111,8 +108,6 @@ void ofApp::update() {
 
 				bReadyToReceive = true;
 			}
-
-			cout << "맵 따는 중입니다 ^^" << endl;
 		}
 	}
 
@@ -124,7 +119,7 @@ void ofApp::update() {
 			ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
 		}
 		ptSystem.update(ptSystem.panAngle, ptSystem.tiltAngle);
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
+		showPanTiltAngle();
 	}
 
 	/* Touch image area */
@@ -269,27 +264,6 @@ void ofApp::draw() {
 
 		if (bkgd_flag)
 			projMeta->draw(headPos, secondUserHandVec);
-
-		ofDrawBitmapString("Camera Position X: " + ofToString(first_imu_data.getCamPosX()), 200, 200);
-		ofDrawBitmapString("Camera Position Y: " + ofToString(first_imu_data.getCamPosY()), 200, 220);
-		ofDrawBitmapString("Camera Position Z: " + ofToString(first_imu_data.getCamPosZ()), 200, 240);
-
-		ofDrawBitmapString("Pitch: " + ofToString(first_imu_data.getPitch()), 200, 280);
-		ofDrawBitmapString("Roll: " + ofToString(first_imu_data.getRoll()), 200, 300);
-		ofDrawBitmapString("Yaw: " + ofToString(first_imu_data.getYaw()), 200, 320);
-
-		ofDrawBitmapString("User Head Depth Position X: " + ofToString(headDepthPos.x), 200, 360);
-		ofDrawBitmapString("User Head Depth Position Y: " + ofToString(headDepthPos.y), 200, 380);
-
-		ofDrawBitmapString("User Head Projection Position X: " + ofToString(headPos.x), 200, 420);
-		ofDrawBitmapString("User Head Projection Position Y: " + ofToString(headPos.y), 200, 440);
-		
-		ofDrawBitmapString("Spatial Touch interface : " + ofToString(touch.bTouchStart), 200, 180);
-		if (touch.bTouchStart)
-		{
-			ofDrawBitmapString("Selected object: " + ofToString(touch_determine), 200, 460);
-			ofDrawBitmapString("Select counting: " + ofToString(touch_determine_cnt), 200, 480);	
-		}
 	}
 
 	/* Map scanning Draw */
@@ -324,7 +298,6 @@ void ofApp::draw() {
 		if (mobileCommand == "d")
 		{
 			KeyDown();
-			//cout << "DownDownDownDownDownDownDownDownDownDown" << endl;
 			bReadyToReceive = !bReadyToReceive;
 		}
 		else if (mobileCommand == "u")
@@ -606,6 +579,7 @@ void ofApp::keyPressed(int key) {
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
 	}
+
 	/* image viwer key press */
 	if (key >= '1' && key <= '4')
 	{
@@ -627,6 +601,7 @@ void ofApp::keyPressed(int key) {
 		}
 		ptSystem.bSceneChange = true;
 	}
+
 	/*warping key*/
 	if (key == 'w' || key == 'W')
 	{
@@ -706,34 +681,6 @@ void ofApp::mouseDragged(int x, int y, int button) {
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mouseDragged(x, y);
 
-	/*int x_offset = x - previous_x;
-	int y_offset = y - previous_y;
-
-	if (button == 0) {
-		// 좌우 회전(Pan) Y축에 대해 / 상하 회전(Tilt) X 축에 대해
-		float x_scale = (0.75f * 360) / ofGetWidth();
-		float y_scale = (0.75f * 360) / ofGetHeight();
-
-		float panVal = x_offset * x_scale;
-		float tiltVal = -y_offset * y_scale;
-
-		viewer.rotate(panVal, ofVec3f(0, -1 * abs(viewer.getPosition().y), 0));
-		viewer.rotate(tiltVal, viewer.getXAxis()); //pitch-
-	}
-	else if (button == 2) {
-		//x_offset은 roll에 매핑
-		float x_scale = ((float)1 * 360) / ofGetWidth();
-		float y_scale = ((float)1000) / ofGetHeight();
-
-		float elevationVal = -y_offset * y_scale;
-		//boom(elevationVal);
-		viewer.move(0, elevationVal, 0);
-	}
-
-	previous_x = x;
-	previous_y = y;*/
-
-
 	/* 뎁스 터치를 위해서 */
 	if (touch_determine > 0) {
 		projMeta->setMovedObjectCoord(
@@ -784,25 +731,12 @@ void ofApp::mousePressed(int x, int y, int button) {
 	// 터치 모드에서 터치 영역 디버그 뷰에 drag point 조절
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mousePressed(x, y, button);
-	//cout << "Mouse click  x = " << x << "  y = " << y << endl;
 
 	// warping
 	if (this->imgWarpingStart)
 		this->imgWarpManager.mousePressed(x, y);
 	if (this->videoWarpingStart)
 		this->videoWarpManager.mousePressed(x, y);
-
-	/*static auto last = ofGetElapsedTimeMillis();
-	auto now = ofGetElapsedTimeMillis();
-	if (button == 0) {
-		if (now - last < 500) {
-			viewer.rotate(-viewer.getOrientationEuler().x, viewer.getXAxis());
-		}
-		last = now;
-	}
-
-	previous_x = x;
-	previous_y = y;*/
 
 	/* 뎁스 터치를 위해서 */
 	ofRectangle object_region[6];
@@ -888,12 +822,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 void ofApp::KeyUp()
 {
-#ifdef MINI_VERSION
-	ptSystem.tiltAngle += 2;
-#endif
-#ifdef ORIGINAL_VERSION
 	ptSystem.tiltAngle += 1;
-#endif
 
 	ptSystem.tiltAngle = ptSystem.tiltAngle > ptSystem.Tilt_max ? ptSystem.Tilt_max : ptSystem.tiltAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
@@ -901,18 +830,12 @@ void ofApp::KeyUp()
 		sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle = ptSystem.tiltAngle;
 	}
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltAngle();
 }
 
 void ofApp::KeyDown()
 {
-
-#ifdef MINI_VERSION
-	ptSystem.tiltAngle -= 2;
-#endif
-#ifdef ORIGINAL_VERSION
 	ptSystem.tiltAngle -= 1;
-#endif
 
 	ptSystem.tiltAngle = ptSystem.tiltAngle < ptSystem.Tilt_min ? ptSystem.Tilt_min : ptSystem.tiltAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
@@ -920,52 +843,35 @@ void ofApp::KeyDown()
 		sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle = ptSystem.tiltAngle;
 	}
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltAngle();
 }
 
 void ofApp::KeyRight()
 {
-
-#ifdef MINI_VERSION
 	ptSystem.panAngle += 2;
-#endif
-#ifdef ORIGINAL_VERSION
-	if (ptSystem.panAngle < ptSystem.Pan_max) {
-		cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
-	}
-	ptSystem.panAngle += 2;
-	if (ptSystem.panAngle < ptSystem.Pan_max) {
-		cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
-	}
-#endif
 
+	ptSystem.panAngle = ptSystem.panAngle > ptSystem.Pan_max ? ptSystem.Pan_max : ptSystem.panAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
 	{
 		sceneManager.scenes[sceneManager.currentSceneIndex].panAngle = ptSystem.panAngle;
 	}
 
-	ptSystem.panAngle = ptSystem.panAngle > ptSystem.Pan_max ? ptSystem.Pan_max : ptSystem.panAngle;
-
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltAngle();
 }
 
 void ofApp::KeyLeft()
 {
-#ifdef MINI_VERSION
 	ptSystem.panAngle -= 2;
-#endif
-#ifdef ORIGINAL_VERSION
-	ptSystem.panAngle -= 2;
-#endif
 
 	ptSystem.panAngle = ptSystem.panAngle < ptSystem.Pan_min ? ptSystem.Pan_min : ptSystem.panAngle;
 	if (bTouchMode || bDisplayMode || vWindow)
 	{
 		sceneManager.scenes[sceneManager.currentSceneIndex].panAngle = ptSystem.panAngle;
 	}
+
 	ptSystem.bSceneChange = true;
-	cout << ptSystem.panAngle << " " << ptSystem.tiltAngle << endl;
+	showPanTiltAngle();
 }
 
 void ofApp::receiveCommand(string command)
@@ -1005,7 +911,35 @@ void ofApp::sendFile(ofFile file, int fileBytesToSend)
 	char* fileSize;
 	int totalBytesSent = 0;
 	tcpFile.sendRawBytes(tcpFile.getLastID() - 1, (char*)&file.getFileBuffer()[totalBytesSent], fileBytesToSend);
-	//tcpServer.sendRawBytes(tcpServer.getLastID() - 1, (char*)&file.readToBuffer()[totalBytesSent], fileBytesToSend);
+}
 
-	//atoi(tcpServer.receive(tcpServer.getLastID() - 1));
+void ofApp::showPanTiltAngle() {
+	cout << "Pan Angle: " << ptSystem.panAngle << endl;
+	cout << "Tilt Angle: " << ptSystem.tiltAngle << endl << endl;
+}
+
+void ofApp::showVirutalWindowInfo() {
+
+	ofDrawBitmapString("Camera Position X: " + ofToString(first_imu_data.getCamPosX()), 200, 200);
+	ofDrawBitmapString("Camera Position Y: " + ofToString(first_imu_data.getCamPosY()), 200, 220);
+	ofDrawBitmapString("Camera Position Z: " + ofToString(first_imu_data.getCamPosZ()), 200, 240);
+
+	ofDrawBitmapString("Pitch: " + ofToString(first_imu_data.getPitch()), 200, 280);
+	ofDrawBitmapString("Roll: " + ofToString(first_imu_data.getRoll()), 200, 300);
+	ofDrawBitmapString("Yaw: " + ofToString(first_imu_data.getYaw()), 200, 320);
+
+	ofDrawBitmapString("User Head Depth Position X: " + ofToString(headDepthPos.x), 200, 360);
+	ofDrawBitmapString("User Head Depth Position Y: " + ofToString(headDepthPos.y), 200, 380);
+
+	ofDrawBitmapString("User Head Projection Position X: " + ofToString(headPos.x), 200, 420);
+	ofDrawBitmapString("User Head Projection Position Y: " + ofToString(headPos.y), 200, 440);
+
+	ofDrawBitmapString("Spatial Touch interface : " + ofToString(touch.bTouchStart), 200, 180);
+
+	if (touch.bTouchStart)
+	{
+		ofDrawBitmapString("Selected object: " + ofToString(touch_determine), 200, 460);
+		ofDrawBitmapString("Select counting: " + ofToString(touch_determine_cnt), 200, 480);
+	}
+
 }
