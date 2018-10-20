@@ -77,12 +77,8 @@ public:
 	}
 
 	void setupVideo(/*string xml_path*/) {
-		
-		
-		//xmlFileName = xml_path;
-
-		//video.loadMovie("images\\video_1.mp4");
 		video.loadMovie("images\\memory_1.mp4");
+		video.setVolume(0);
 	}
 
 	/************************************************************************/
