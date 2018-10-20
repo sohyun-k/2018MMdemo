@@ -628,6 +628,7 @@ void ofApp::keyPressed(int key) {
 		if (!bTouchMode)
 		{
 			touch.clearDT();
+			touch.bDrawTouchDebugView = false;
 			sceneManager.save();
 			//touch.bTouchStart = false;
 		}
@@ -638,6 +639,11 @@ void ofApp::keyPressed(int key) {
 	if (key == 'z' || key == 'Z')
 	{
 		sceneManager.currentScene->isTouchable = !sceneManager.currentScene->isTouchable;
+		if (!sceneManager.currentScene->isTouchable)
+		{
+			touch.clearDT();
+			touch.bDrawTouchDebugView = false;
+		}
 	}
 	if (key == 'u' || key == 'U')
 	{
@@ -646,7 +652,8 @@ void ofApp::keyPressed(int key) {
 		vWindow = false;
 		//testVirtual = false;
 		bUIMode = !bUIMode;
-
+		touch.bDrawTouchDebugView = false;
+		touch.clearDT();
 		display_img_num = 4;
 		sceneManager.changeCurrentScene(display_img_num);
 		ptSystem.bSceneChange = true;
@@ -689,7 +696,8 @@ void ofApp::keyPressed(int key) {
 	
 	if (key == 'v' || key == 'V')
 	{
-
+		touch.clearDT();
+		touch.bDrawTouchDebugView = false;
 		bMappingMode = false;
 		//bTouchMode = false;
 		bUIMode = false;
@@ -707,9 +715,6 @@ void ofApp::keyPressed(int key) {
 			touch.setCurrentScene(sceneManager.currentScene);
 		}
 		ptSystem.bSceneChange = true;
-		/*ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;*/
 	}
 	if (key == 's' || key == 'S') {
 		mapScanning.SaveFile("");
@@ -767,7 +772,6 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpManager.showDragPoints();
 		this->imgWarpManager.draw();
 	}
-
 	if (key == 'x' || key == 'X')
 	{
 		this->videoWarpingStart = !this->videoWarpingStart;
