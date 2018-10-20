@@ -7,18 +7,18 @@
 #include "PanTiltSystem.hpp"
 #include "Scene.hpp"
 #include "SceneManager.hpp"
-//#include "MobileConnectionServer.hpp"
-//#include "ofxNetwork\src\ofxNetwork.h"
-//#include "ofxNetwork\src\ofxTCPServer.h"
-//#include "ofxTCPServer.h"
-//#include "MobileConnectionManager.hpp"
-//#include "MobileConnectionServer.hpp"
 #include "PhoneToDesktop.hpp"
 #include "ProjectorMetaphor.hpp"
 #include "SkeletonFromKinect.hpp"
 #include "DepthTouch.hpp"
 #include "WarpImg.h"
 #include "WarpVideo.h"
+//#include "MobileConnectionServer.hpp"
+//#include "ofxNetwork\src\ofxNetwork.h"
+//#include "ofxNetwork\src\ofxTCPServer.h"
+//#include "ofxTCPServer.h"
+//#include "MobileConnectionManager.hpp"
+//#include "MobileConnectionServer.hpp"
 
 class ofApp : public ofBaseApp {
 
@@ -48,9 +48,10 @@ class ofApp : public ofBaseApp {
 		void receiveImage(ofImage &image, int numBytes);
 
 		void sendFile(ofFile file, int fileBytesToSend);
+		void showVwInfo();
+		void showPanTiltInfo();
 		
 		VisionDeviceKinect2* kinect;
-//		VisionDeviceOpenNi* xtion;
 				
 		PanTiltSystem ptSystem;
 				
@@ -66,32 +67,26 @@ class ofApp : public ofBaseApp {
 		ofxTCPServer tcpServer;	//tcp server
 
 		//ClientInfo clientInfo;
-
 		vector <string> storeText;
 		//vector <ofImage> storeImage;
-
 		
 		bool b_touch;
 		bool frame_touch;
 		//Mat touchDepth;
 		//Mat touchColor;
 		int touch_cnt = 0;
-		int touch_cnt2 = 0;
-		
+		int touch_cnt2 = 0;		
+		bool bDrawColorMat;
 
 		bool	bDrawDragPoints;
-		bool	bDrawContents;
-
-		
+		bool	bDrawContents;		
 
 		char recv[50];
 
 		bool b_Mapping;
 		//bool mapping_mode;
 		
-		// yjp
-		bool bTouchMode, bMappingMode, bDisplayMode;
-
+		bool bTouchMode, bMappingMode, bDisplayMode, bUIMode;
 		
 		//Scene backGroundImg;
 		int num_img = 0;
@@ -126,8 +121,6 @@ class ofApp : public ofBaseApp {
 			"map"
 		};
 
-		//vector<Scene> spaceImages;
-
 		WarpImg imgWarpManager;
 		bool b_warpImgDisplay = false;
 		bool imgWarpingStart = false;
@@ -138,9 +131,9 @@ class ofApp : public ofBaseApp {
 		int display_img_num;
 
 		int touch_determine;
-		
+		int touch_determine_cnt;
 
-		//virtual window
+		/* virtual window 변수들 시작 */
 		PhoneToDesktop* iPhone;
 		ProjectorMetaphor* projMeta;
 		SkeletonFromKinect* skeletonData;
@@ -160,6 +153,7 @@ class ofApp : public ofBaseApp {
 		ofCamera viewer;
 		int previous_x;
 		int previous_y;
+		/* virtual window 변수들 끝 */
 
 		ofTrueTypeFont font;
 
@@ -225,7 +219,6 @@ class ofApp : public ofBaseApp {
 		bool home, map, vWindow, pantilt, imgReceive;
 		MenuMaker mHome, mMap, mWindow, mPantilt, mimgReceive, mReceiving, mConstruct, mSelect;
 
-		//dbg
 		bool bReadyToReceive = true;
 
 		private:
