@@ -48,9 +48,10 @@ class ofApp : public ofBaseApp {
 		void receiveImage(ofImage &image, int numBytes);
 
 		void sendFile(ofFile file, int fileBytesToSend);
+		void showPanTiltAngle();
+		void showVirutalWindowInfo();
 		
 		VisionDeviceKinect2* kinect;
-//		VisionDeviceOpenNi* xtion;
 				
 		PanTiltSystem ptSystem;
 				
@@ -69,7 +70,6 @@ class ofApp : public ofBaseApp {
 
 		vector <string> storeText;
 		//vector <ofImage> storeImage;
-
 		
 		bool b_touch;
 		bool frame_touch;
@@ -80,9 +80,7 @@ class ofApp : public ofBaseApp {
 		bool bDrawColorMat;
 
 		bool	bDrawDragPoints;
-		bool	bDrawContents;
-
-		
+		bool	bDrawContents;	
 
 		char recv[50];
 
@@ -91,7 +89,6 @@ class ofApp : public ofBaseApp {
 		
 		// yjp
 		bool bTouchMode, bMappingMode, bDisplayMode, bUIMode;
-
 		
 		//Scene backGroundImg;
 		int num_img = 0;
@@ -125,8 +122,6 @@ class ofApp : public ofBaseApp {
 			"left",
 			"map"
 		};
-
-		//vector<Scene> spaceImages;
 
 		WarpImg imgWarpManager;
 		bool b_warpImgDisplay = false;
@@ -225,10 +220,7 @@ class ofApp : public ofBaseApp {
 		bool home, map, vWindow, pantilt, imgReceive;
 		MenuMaker mHome, mMap, mWindow, mPantilt, mimgReceive, mReceiving, mConstruct, mSelect;
 
-		//dbg
 		bool bReadyToReceive = true;
 
-		private:
-			DepthTouch touch;
-			//TouchBGManager touchBackImgManager;
+		DepthTouch touch;
 };
