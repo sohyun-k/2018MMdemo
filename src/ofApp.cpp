@@ -42,7 +42,7 @@ void ofApp::setup() {
 	skeletonData = new SkeletonFromKinect();
 	bkgd_flag = true;
 
-	///* Virtual window setup */
+	/* Virtual window setup */
 	/*viewer.setNearClip(0.1);
 	viewer.setFarClip(20000);*/
 	iPhone->setup();
@@ -121,20 +121,7 @@ void ofApp::update() {
 		ptSystem.update(ptSystem.panAngle, ptSystem.tiltAngle);
 		showPanTiltAngle();
 	}
-
-	/* Touch image area */
-	float icon_x_min = 400.0;
-	float icon_x_max = 750.0;
-
-	float icon_y_min = 400.0;
-	float icon_y_max = 1000.0;
-
-	float icon_x_min2 = 850.0;
-	float icon_x_max2 = 1400.0;
-
-	float icon_y_min2 = 400.0;
-	float icon_y_max2 = 1000.0;
-
+	
 	/* Virtual Window */
 	if (vWindow)
 	{
