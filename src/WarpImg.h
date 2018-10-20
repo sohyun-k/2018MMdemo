@@ -7,10 +7,9 @@
 class WarpImg
 {
 private:
-	std::vector<Vertices> mobileVertices;
 	std::vector<string> mobileContentsFileName;
 	std::vector<string> mobileXmlFileName;
-	std::vector<ofImage> mobileContentsImage;
+	
 	int mobileNum;
 	bool bDrawDragPoints;
 	bool xmlExists = false;
@@ -23,6 +22,8 @@ private:
 
 public:
 	WarpImg() {};
+	std::vector<ofImage> mobileContentsImage;
+	std::vector<Vertices> mobileVertices;
 	void testSetup(std::vector<string> fileNames);
 	void mobileImageSetup(std::vector<ofImage> mobileImages);
 	void xmlSave();

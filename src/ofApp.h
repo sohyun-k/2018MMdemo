@@ -89,7 +89,7 @@ class ofApp : public ofBaseApp {
 		
 		// yjp
 		bool bTouchMode, bMappingMode, bDisplayMode, bUIMode;
-		
+		ofRectangle UI_region[4];
 		//Scene backGroundImg;
 		int num_img = 0;
 		//vector<string> img_path = {
@@ -102,11 +102,11 @@ class ofApp : public ofBaseApp {
 		//};
 
 		vector<string> img_test_path = {
-			"/images/scene1_ver2",
-			"/images/scene_2",
-			"/images/scene_3",
-			"/images/scene_4",
-			"/images/background"
+			"/images/numberimg/1",
+			"/images/numberimg/2",
+			"/images/numberimg/3",
+			"/images/numberimg/4"
+			//,			"/images/background"
 		};
 
 		vector<string> video_test_path = {
@@ -134,6 +134,9 @@ class ofApp : public ofBaseApp {
 
 		int touch_determine;
 		int touch_determine_cnt;
+	
+		int UI_touch_determine;
+		int UI_touch_determine_cnt;
 
 		//virtual window
 		PhoneToDesktop* iPhone;
