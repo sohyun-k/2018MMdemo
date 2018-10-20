@@ -47,7 +47,7 @@ public:
 
 	DepthTouch() : bUpdate(false),  bTrain(false), bTouchStart(false), bDrawTouchDebugView(false), bMultifirst(false), bDrawTouchPoint(false), bClear(false)
 	{
-		trainCnt = 0;
+		//trainCnt = 0;
 		normalizedTouchPoints.clear();
 		path.clear();									// 2016-02-20
 		originalTouchPoint.clear();
@@ -86,8 +86,9 @@ public:
 		bTouchStart = false;
 		visionDeviceManager->setFlipVertical(true);
 		visionDeviceManager->setFlipHorizontal(false);
-		//warpdepthRGB.clear();
-		//cvDiffImg.clear();
+		warpdepthRGB.clear();
+		cvDiffImg.clear();
+		contourFinder.resetAnchor();
 	}
 	void visionSet(bool bTouch)
 	{
@@ -124,13 +125,13 @@ public:
 		size = Size(visionDeviceManager->getDepthWidth(), visionDeviceManager->getDepthHeight());
 
 		depthShortMat = visionDeviceManager->getDepthShortMat();
-		colorMat = visionDeviceManager->getColorMat();
+		//colorMat = visionDeviceManager->getColorMat();
 
 		warpMat = Mat(size.height, size.width, depthShortMat.type());
 		touchMat = Mat(size.height, size.width, depthShortMat.type());
 
 		warpDepth = Mat(size.height, size.width, depthShortMat.type());
-		warpColor = Mat(size.height, size.width, colorMat.type());
+		//warpColor = Mat(size.height, size.width, colorMat.type());
 
 		//currWarpMat = Mat(size.height, size.width, depthShortMat.type());
 		//prevWarpMat = Mat(size.height, size.width, depthShortMat.type());
@@ -219,6 +220,9 @@ public:
 	//	}
 			if (bTrain) {
 				ofLogNotice("KinectTouch: Training...");
+				cvDiffImg.clear();
+				cvDiffImg.allocate(size.width, size.height);
+				contourFinder.resetAnchor();
 				trainedMat = warpMat.clone();
 				bTouchStart = true;
 				bTrain = false;
@@ -526,10 +530,11 @@ public:
 			//==============================
 			warpdepthRGB.draw(debugViewport.x - debugViewport.width, debugViewport.y, debugViewport.width, debugViewport.height);
 			//visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
-			
-			cvDiffImg.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
-			contourFinder.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
-
+			if (bTouchStart)
+			{
+				cvDiffImg.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
+				contourFinder.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
+			}
 			if (warpedTouchPoint.size() != 0)
 			{
 				ofDrawBitmapString("User Hand Depth Position X: " + ofToString(warpedTouchPoint[0].x), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 60);
@@ -715,7 +720,7 @@ public:
 
 	bool bMultifirst;
 	bool bDetect;
-	int trainCnt;
+	//int trainCnt;
 	vector<ofPoint>	normalizedTouchPoints;
 	ofPoint p;
 	vector<ofPoint> path;
