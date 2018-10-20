@@ -86,8 +86,8 @@ public:
 		bTouchStart = false;
 		visionDeviceManager->setFlipVertical(true);
 		visionDeviceManager->setFlipHorizontal(false);
-		warpdepthRGB.clear();
-		cvDiffImg.clear();
+		//warpdepthRGB.clear();
+		//cvDiffImg.clear();
 	}
 	void visionSet(bool bTouch)
 	{

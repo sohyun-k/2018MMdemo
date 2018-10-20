@@ -35,7 +35,7 @@ public:
 	void	changeCurrentScene(int sceneIndex)
 	{
 		touch->bTouchStart = false;
-
+		
 		ofLogNotice("Scene is changed from " + ofToString(currentSceneIndex) + " to " + ofToString(sceneIndex));
 
 		// ¿Ã¿¸ Scene¿« Touchable º”º∫¿∫ ≤®¡‹

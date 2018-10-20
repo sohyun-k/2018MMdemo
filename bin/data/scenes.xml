@@ -77,8 +77,8 @@
         <touch_y>262.000000000</touch_y>
         <min>15.000000000</min>
         <max>36.000000000</max>
-        <offsetX>-40.000000000</offsetX>
-        <offsetY>-20.000000000</offsetY>
+        <offsetX>0.000000000</offsetX>
+        <offsetY>0.000000000</offsetY>
         <contents>/images/dt/UIFigure.jpg</contents>
     </Scene>
     <Scene>
