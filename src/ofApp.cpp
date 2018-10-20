@@ -163,106 +163,11 @@ void ofApp::update() {
 	/* new touch update */
 	if (bTouchMode)
 	{
-		touch.update(/*touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y*/);	
-		//cout << "Touch Mode Touch Mode Touch Mode Touch Mode Touch Mode" << endl;
-		//if (touch.bTouchStart)
-		//{
-		//	if (touch.warpedTouchPoint.size() != 0)
-		//	{
-		//		cout << "Touch cnt = " << touch_cnt << "Touch cnt2 = " << touch_cnt2 << endl;
-		//		cout << "Touch Point x = " << touch.warpedTouchPoint[0].x << "   y = " << touch.warpedTouchPoint[0].y << endl;
-		//		if (touch.warpedTouchPoint.size() == 2) {
-		//			cout << "Touch Point2 x = " << touch.warpedTouchPoint[1].x << "   y = " << touch.warpedTouchPoint[1].y << endl;
-		//		}
-		//		if (icon_x_min < touch.warpedTouchPoint[0].x && touch.warpedTouchPoint[0].x < icon_x_max
-		//			&& icon_y_min < touch.warpedTouchPoint[0].y && touch.warpedTouchPoint[0].y < icon_y_max)
-		//		{
-		//			touch_cnt++;
-		//			touch_cnt2 -= 1;
-		//			if (touch_cnt2 <= 0)
-		//			{
-		//				touch_cnt2 = 0;
-		//			}
-		//		}
-		//		else if (icon_x_min2 < touch.warpedTouchPoint[0].x && touch.warpedTouchPoint[0].x < icon_x_max2
-		//			&& icon_y_min2 < touch.warpedTouchPoint[0].y && touch.warpedTouchPoint[0].y < icon_y_max2)
-		//		{
-		//			touch_cnt -= 1;
-		//			touch_cnt2++;
-		//			if (touch_cnt <= 0)
-		//			{
-		//				touch_cnt = 0;
-		//			}
-		//		}
-		//		else {
-		//			touch_cnt -= 1;
-		//			touch_cnt2 -= 1;
-		//			if (touch_cnt <= 0)
-		//			{
-		//				touch_cnt = 0;
-		//			}
-		//			if (touch_cnt2 <= 0)
-		//			{
-		//				touch_cnt2 = 0;
-		//			}
-		//		}
-		//		if (touch_cnt > 5)
-		//		{
-		//			b_touch = true;
-		//		}
-		//		if (b_touch)
-		//		{
-		//			/*ptSystem.update(156, 67);
-		//			display_img_num = 0;
-		//			touch.init();*/
-		//			vWindow = true;
-		//			bTouchMode = false;
-		//			//touch.bDrawTouchDebugView, touch.bDrawTouchPoint = false;
-		//			display_img_num = 5;
-		//			sceneManager.changeCurrentScene(display_img_num);
-		//			ptSystem.bSceneChange = true;
-		//			ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		//			ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		//			cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
-		//			b_touch = false;
-		//			touch_cnt = 0;
-		//			touch_cnt2 = 0;
-		//			touch.clearDT();
-		//			touch.update();
-		//		}
-		//		if (touch_cnt2 > 5)
-		//		{
-		//			frame_touch = true;
-		//		}
-		//		if (frame_touch)
-		//		{
-		//			bMappingMode = false;
-		//			bTouchMode = false;
-		//			//touch.bDrawTouchDebugView, touch.bDrawTouchPoint = false;
-		//			bDisplayMode = true;
-		//			vWindow = false;
-		//			touch.bTouchStart = false;
-		//			display_img_num = 0;
-		//			sceneManager.changeCurrentScene(display_img_num);
-		//			ptSystem.bSceneChange = true;
-		//			ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		//			ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		//			cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
-		//			frame_touch = false;
-		//			touch_cnt = 0;
-		//			touch_cnt2 = 0;
-		//			touch.clearDT();
-		//			touch.update();
-		//		}
-		//	}
-		//}
-		//else {
-		//	touch.clearDT();
-		//}
+		touch.update();	
 	}
-	else {
+	/*else {
 		touch.clearDT();
-	}
+	}*/
 
 	if (vWindow)
 	{
@@ -310,68 +215,21 @@ void ofApp::update() {
 			);
 		}
 	}
-	/*if (vWindow && touch.warpedTouchPoint.size() != 0)
-	{
-		ofRectangle object_region[6];
-		for (int i = 1; i < 6; i++)
-		{
-			if (projMeta->for_mm_image[i].dirty)
-			{
-				object_region[i].set(
-					projMeta->for_mm_image[i].fixed_point.x,
-					projMeta->for_mm_image[i].fixed_point.y,
-					projMeta->for_mm_image[i].img.getWidth(),
-					projMeta->for_mm_image[i].img.getHeight());
-				if (object_region[i].inside(touch.warpedTouchPoint[0].x, touch.warpedTouchPoint[0].y))
-				{
 
-					touch_determine_cnt++;
-					if (touch_determine_cnt >= 5)
-					{
-						touch_determine_cnt = 5;
-						touch_determine = i;
-					}
-				}
-			}
-		}
-	}
-	if (vWindow && touch.warpedTouchPoint.size() == 0) {
-		touch_determine_cnt -= 1;
-		if (touch_determine_cnt < 0)
-		{
-			touch_determine_cnt = 0;
-			touch_determine = -3;
-		}
-	}
-	if (touch_determine > 0)
-	{
-		projMeta->setMovedObjectCoord(
-			touch_determine,
-			ofPoint(
-				touch.warpedTouchPoint[0].x - projMeta->for_mm_image[touch_determine].img.getWidth() / 2,
-				touch.warpedTouchPoint[0].y - projMeta->for_mm_image[touch_determine].img.getHeight() / 2
-			)
-		);
-	}
-*/
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	//ofEnableAlphaBlending();
 	if (bMappingMode || home)
 	{
 		ofBackground(0);
 		//sceneManager.currentScene->drawBackground();
 	}
-	if (/*vWindow || */bUIMode) {
-		
-		sceneManager.currentScene->draw(true);
-	}
-	if (testVirtual)
+	/* test Virtual Current scene Draw */
+	/*if (testVirtual)
 	{
 		sceneManager.currentScene->draw(true);
-	}
+	}*/
 	/* Warping Draw */
 	if (this->b_warpImgDisplay)
 	{
@@ -382,7 +240,7 @@ void ofApp::draw() {
 		this->videoWarpManager.draw();
 	}
 
-	/* Map mode */
+	/* Map mode : mobile commend */
 	if (map)
 	{
 		ofSetColor(255, 255, 255);
@@ -397,7 +255,11 @@ void ofApp::draw() {
 		else
 			cout << "Wrong command" << endl;
 	}
-
+	/* Table top GUI Draw */
+	if (bUIMode) 
+	{
+		sceneManager.currentScene->draw(true);
+	}
 	/* Virtual window mode */
 	if (vWindow)
 	{
@@ -425,17 +287,17 @@ void ofApp::draw() {
 		ofDrawBitmapString("Spatial Touch interface : " + ofToString(touch.bTouchStart), 200, 180);
 		if (touch.bTouchStart)
 		{
-			ofDrawBitmapString("Selected object: " + ofToString(touch_determine), 1200, 1000);
-			ofDrawBitmapString("Select counting: " + ofToString(touch_determine_cnt), 1200, 1020);	
+			ofDrawBitmapString("Selected object: " + ofToString(touch_determine), 200, 460);
+			ofDrawBitmapString("Select counting: " + ofToString(touch_determine_cnt), 200, 480);	
 		}
 	}
 
-	/* Virtual window touch test */
-
+	/* Map scanning Draw */
 	if (bMappingMode)
 	{
 		mapScanning.Draw();
 	}
+	/* image viewer Draw */
 	if (bDisplayMode)
 	{
 		if (display_img_num == 1) {
@@ -533,6 +395,7 @@ void ofApp::draw() {
 		}
 	}
 
+	/* Virtual window touch test */
 	/*if (testVirtual)
 	{
 		iPhone->draw();
@@ -543,8 +406,7 @@ void ofApp::draw() {
 
 		projMeta->drawVirtualObjects();
 	}*/
-
-	//if (/*(vWindow||bTouchMode) && sceneManager.currentScene->isTouchable &&*/ touch.bTouchStart)
+	/* Depth touch Draw */
 	if (bTouchMode)
 	{
 		touch.draw();
@@ -733,10 +595,10 @@ void ofApp::keyPressed(int key) {
 	}
 	if (key == 'm' || key == 'M') {
 		bMappingMode = !bMappingMode;
-		//bTouchMode = false;
 		bDisplayMode = false;
 		bUIMode = false;
 		vWindow = false;
+		bTouchMode = false;
 		touch.clearDT();
 		touch.bDrawTouchDebugView = false;
 		this->b_warpImgDisplay = false;
@@ -748,6 +610,7 @@ void ofApp::keyPressed(int key) {
 	if (key >= '1' && key <= '4')
 	{
 		bMappingMode = false;
+		bTouchMode = false;
 		touch.clearDT();
 		touch.bDrawTouchDebugView = false;
 		bDisplayMode = true;
@@ -767,6 +630,13 @@ void ofApp::keyPressed(int key) {
 	/*warping key*/
 	if (key == 'w' || key == 'W')
 	{
+		bTouchMode = false;
+		touch.clearDT();
+		touch.bDrawTouchDebugView = false;
+		bMappingMode = false;
+		bUIMode = false;
+		bDisplayMode = false;
+		vWindow = false;
 		this->imgWarpingStart = !this->imgWarpingStart;
 		this->b_warpImgDisplay = !this->b_warpImgDisplay;
 		this->imgWarpManager.showDragPoints();
@@ -774,6 +644,13 @@ void ofApp::keyPressed(int key) {
 	}
 	if (key == 'x' || key == 'X')
 	{
+		bTouchMode = false;
+		touch.clearDT();
+		touch.bDrawTouchDebugView = false;
+		bMappingMode = false;
+		bUIMode = false;
+		bDisplayMode = false;
+		vWindow = false;
 		this->videoWarpingStart = !this->videoWarpingStart;
 		this->b_warpVideoDisplay = !this->b_warpVideoDisplay;
 		this->videoWarpManager.showDragPoints();
