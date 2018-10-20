@@ -728,92 +728,37 @@ void ofApp::keyPressed(int key) {
 	}
 	if (key == 'm' || key == 'M') {
 		bMappingMode = !bMappingMode;
-		bTouchMode = false;
+		//bTouchMode = false;
 		bDisplayMode = false;
 		bUIMode = false;
 		vWindow = false;
+		touch.clearDT();
+		touch.bDrawTouchDebugView = false;
 		this->b_warpImgDisplay = false;
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
 	}
-	if (key == '1') {
+	/* image viwer key press */
+	if (key >= '1' && key <= '4')
+	{
 		bMappingMode = false;
-		bTouchMode = false;
+		touch.clearDT();
+		touch.bDrawTouchDebugView = false;
 		bDisplayMode = true;
 		vWindow = false;
 		this->b_warpImgDisplay = false;
 		this->imgWarpingStart = false;
 		this->b_warpVideoDisplay = false;
 		this->videoWarpingStart = false;
-		display_img_num = 0;
+		display_img_num = key - '1';
 		sceneManager.changeCurrentScene(display_img_num);
+		if (display_img_num==1)
+		{
+			sceneManager.currentScene->loadVideoContents();
+		}
 		ptSystem.bSceneChange = true;
-		/*ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;*/
 	}
-	else if (key == '2') {
-		bMappingMode = false;
-		bTouchMode = false;
-		bDisplayMode = true;
-		vWindow = false;
-		this->b_warpImgDisplay = false;
-		this->imgWarpingStart = false;
-		this->b_warpVideoDisplay = false;
-		this->videoWarpingStart = false;
-		// pan-tilt value가 scene.xml에도 존재하기 때문에 아래 코드는 안쓰일 수 있음 
-		// 확인해보기
-		//ptSystem.update(80, 127);
-		display_img_num = 1;
-		sceneManager.changeCurrentScene(display_img_num);
-		ptSystem.bSceneChange = true;
-		/*ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;*/
-		sceneManager.currentScene->loadVideoContents();
-	}
-	else if (key == '3') {
-		bMappingMode = false;
-		bTouchMode = false;
-		bDisplayMode = true;
-		vWindow = false;
-		this->b_warpImgDisplay = false;
-		this->imgWarpingStart = false;
-		this->b_warpVideoDisplay = false;
-		this->videoWarpingStart = false;
-		// pan-tilt value가 scene.xml에도 존재하기 때문에 아래 코드는 안쓰일 수 있음 
-		// 확인해보기
-		//ptSystem.update(94, 117);
-
-		display_img_num = 2;
-		sceneManager.changeCurrentScene(display_img_num);
-		ptSystem.bSceneChange = true;
-		/*ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;*/
-	}
-	else if (key == '4') {
-		bMappingMode = false;
-		bTouchMode = false;
-		bDisplayMode = true;
-		vWindow = false;
-		this->b_warpImgDisplay = false;
-		this->imgWarpingStart = false;
-		this->b_warpVideoDisplay = false;
-		this->videoWarpingStart = false;
-		// pan-tilt value가 scene.xml에도 존재하기 때문에 아래 코드는 안쓰일 수 있음 
-		// 확인해보기
-		//ptSystem.update(128, 127);
-
-		display_img_num = 3;
-		sceneManager.changeCurrentScene(display_img_num);
-		ptSystem.bSceneChange = true;
-		/*ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
-		ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
-		cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;*/
-	}
-
 	/*warping key*/
 	if (key == 'w' || key == 'W')
 	{
