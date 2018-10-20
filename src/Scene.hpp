@@ -272,7 +272,7 @@ public:
 
 	void drawVideo(bool b_draw)
 	{
-		ofEnableAlphaBlending();
+		//ofEnableAlphaBlending();
 
 		video.play();
 		video.update();
