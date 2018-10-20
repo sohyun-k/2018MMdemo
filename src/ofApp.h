@@ -50,6 +50,7 @@ class ofApp : public ofBaseApp {
 		void sendFile(ofFile file, int fileBytesToSend);
 		void showPanTiltAngle();
 		void showVirutalWindowInfo();
+		void showSUIInfo();
 		
 		VisionDeviceKinect2* kinect;
 				
@@ -102,10 +103,10 @@ class ofApp : public ofBaseApp {
 		//};
 
 		vector<string> img_test_path = {
-			"/images/numberimg/1",
-			"/images/numberimg/2",
-			"/images/numberimg/3",
-			"/images/numberimg/4"
+			"/images/dt/sui_idea_sharing"
+			,"/images/dt/sui_image_viewer"
+			//,"/images/numberimg/3"
+			//,"/images/numberimg/4"
 			//,			"/images/background"
 		};
 

@@ -72,6 +72,7 @@ void ofApp::setup() {
 	/* Image Warping */
 	this->imgWarpManager.testSetup(this->img_test_path);
 	//this->videoWarpManager.testSetup(this->video_test_path);
+	this->imgWarpManager.bDrawDragPoints = true;
 
 	display_img_num = 0;
 	touch_determine_cnt = 0;
@@ -81,7 +82,7 @@ void ofApp::setup() {
 	/* new touch setup */
 	touch.init(kinect);
 	touch.set();
-	touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y);
+	touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
 	
 	cout << "bMappingMode = " << bMappingMode << ", bDisplayMode = " << bDisplayMode << ", bTouchMode = " << bTouchMode << ", bVirtualWinodw = " << vWindow << ", bUIMode = " << bUIMode << ", bWarpMode = " << this->b_warpImgDisplay << endl;
 	cout << "touch.bDrawTouchPoint = " << touch.bDrawTouchPoint << ", touch.bDrawTouchDebugView = " << touch.bDrawTouchDebugView << endl;
@@ -124,18 +125,6 @@ void ofApp::update() {
 		showPanTiltAngle();
 	}
 
-	/* Touch image area */
-	float icon_x_min = 400.0;
-	float icon_x_max = 750.0;
-
-	float icon_y_min = 400.0;
-	float icon_y_max = 1000.0;
-
-	float icon_x_min2 = 850.0;
-	float icon_x_max2 = 1400.0;
-
-	float icon_y_min2 = 400.0;
-	float icon_y_max2 = 1000.0;
 
 	/* Virtual Window */
 	if (vWindow)
@@ -209,7 +198,7 @@ void ofApp::update() {
 	{
 		if (touch.warpedTouchPoint.size() != 0)
 		{
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < this->imgWarpManager.mobileNum; i++)
 			{
 				if (this->b_warpImgDisplay)
 				{		
@@ -222,9 +211,9 @@ void ofApp::update() {
 					{
 
 						UI_touch_determine_cnt++;
-						if (UI_touch_determine_cnt >= 5)
+						if (UI_touch_determine_cnt >= 10)
 						{
-							UI_touch_determine_cnt = 5;
+							UI_touch_determine_cnt = 10;
 							UI_touch_determine = i;
 						}
 					}
@@ -294,10 +283,7 @@ void ofApp::draw() {
 		{
 			this->imgWarpManager.draw();
 		}
-		if (this->b_warpVideoDisplay)
-		{
-			//this->videoWarpManager.draw();
-		}
+
 	}
 	/* Virtual window mode */
 	if (vWindow)
@@ -428,6 +414,7 @@ void ofApp::draw() {
 	if (bTouchMode)
 	{
 		touch.draw();
+		showSUIInfo();
 	}
 	/* UI rectangle region Draw */
 	//if(bUIMode)
@@ -488,7 +475,7 @@ void ofApp::keyPressed(int key) {
 			//touch.bTouchStart = false;
 		}
 		else {
-			touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y);
+			touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
 		}
 	}
 	
@@ -625,7 +612,8 @@ void ofApp::keyPressed(int key) {
 	if (key == 'd' || key == 'D') {
 		bDrawDragPoints = !bDrawDragPoints;
 		sceneManager.setDrawDragPoints(bDrawDragPoints);
-		this->imgWarpManager.showDragPoints();
+		//this->imgWarpManager.showDragPoints();
+		this->imgWarpManager.bDrawDragPoints = !this->imgWarpManager.bDrawDragPoints;
 	}
 	if (key == 'm' || key == 'M') {
 		bMappingMode = !bMappingMode;
@@ -675,8 +663,8 @@ void ofApp::keyPressed(int key) {
 		vWindow = false;
 		this->imgWarpingStart = !this->imgWarpingStart;
 		this->b_warpImgDisplay = !this->b_warpImgDisplay;
-		this->imgWarpManager.showDragPoints();
-		this->imgWarpManager.draw();
+		//this->imgWarpManager.showDragPoints();
+		//this->imgWarpManager.draw();
 	}
 	if (key == 'x' || key == 'X')
 	{
@@ -1002,5 +990,30 @@ void ofApp::showVirutalWindowInfo() {
 		ofDrawBitmapString("Selected object: " + ofToString(touch_determine), 200, 460);
 		ofDrawBitmapString("Select counting: " + ofToString(touch_determine_cnt), 200, 480);
 	}
+}
 
+void ofApp::showSUIInfo() {
+
+	ofDrawBitmapString("Spatial Touch Start : " + ofToString(touch.bTouchStart), 200, 800);
+	if (touch.warpedTouchPoint.size() != 0)
+	{
+		ofDrawBitmapString("User Hand Depth Position X: " + ofToString(touch.warpedTouchPoint[0].x), 200,820);
+		ofDrawBitmapString("User Hand Depth Position Y: " + ofToString(touch.warpedTouchPoint[0].y), 200, 840);
+	}
+	ofDrawBitmapString("User Hand Depth Position X offset: " + ofToString(touch.touchPointOffset.x),200, 860);
+	ofDrawBitmapString("User Hand Depth Position Y offset: " + ofToString(touch.touchPointOffset.y),200, 880);
+	ofDrawBitmapString("Depth touch Min: " + ofToString(touch.minT), 200,900);
+	ofDrawBitmapString("Depth touch Max: " + ofToString(touch.maxT), 200, 920);
+	ofDrawBitmapString("Depth touch Area Min: " + ofToString(touch.touchMinArea), 200, 940);
+	ofDrawBitmapString("Depth touch Area Max: " + ofToString(touch.touchMaxArea), 200, 960);
+	if (touch.bTouchStart && bUIMode)
+	{
+		ofDrawBitmapString("Selected object: " + ofToString(UI_touch_determine), 200, 980);
+		ofDrawBitmapString("Select counting: " + ofToString(UI_touch_determine_cnt), 200, 1000);
+	}
+	if (touch.bTouchStart && vWindow)
+	{
+		ofDrawBitmapString("Selected object: " + ofToString(touch_determine), 200,980);
+		ofDrawBitmapString("Select counting: " + ofToString(touch_determine_cnt), 200, 1000);
+	}
 }

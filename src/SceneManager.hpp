@@ -53,6 +53,8 @@ public:
 			currentScene->max = touch->maxT;
 			currentScene->offsetx = touch->touchPointOffset.x;
 			currentScene->offsety = touch->touchPointOffset.y;
+			currentScene->touchMinArea = touch->touchMinArea;
+			currentScene->touchMaxArea = touch->touchMaxArea;
 		}
 
 		// 이전 Scene의 PanTilt 정보 저장
@@ -87,6 +89,8 @@ public:
 			touch->minT = currentScene->min;
 			touch->maxT = currentScene->max;
 			touch->touchPointOffset.set(currentScene->offsetx, currentScene->offsety);
+			touch->touchMinArea = currentScene->touchMinArea;
+			touch->touchMaxArea = currentScene->touchMaxArea;
 		}
 	}
 
@@ -128,6 +132,8 @@ public:
 				scenes[i].max = settings.getValue("max", 0);
 				scenes[i].offsetx = settings.getValue("offsetX", 0);
 				scenes[i].offsety = settings.getValue("offsetY", 0);
+				scenes[i].touchMinArea = settings.getValue("AreaMin", 0);
+				scenes[i].touchMaxArea = settings.getValue("AreaMax", 0);
 			}
 
 			scenes[i].contentsFileName = settings.getValue("contents","");
@@ -149,6 +155,8 @@ public:
 			touch->minT = scenes[0].min;
 			touch->maxT = scenes[0].max;
 			touch->touchPointOffset.set(scenes[0].offsetx, scenes[0].offsety);
+			touch->touchMinArea = scenes[0].touchMinArea;
+			touch->touchMaxArea = scenes[0].touchMaxArea;
 		}
 		
 		return true;
@@ -167,6 +175,8 @@ public:
 			currentScene->max = touch->maxT;
 			currentScene->offsetx = touch->touchPointOffset.x;
 			currentScene->offsety = touch->touchPointOffset.y;
+			currentScene->touchMinArea = touch->touchMinArea ;
+			currentScene->touchMaxArea = touch->touchMaxArea;
 		}
 
 		ofxXmlSettings settings;
@@ -200,6 +210,8 @@ public:
 				settings.addValue("max", scenes[i].max);
 				settings.addValue("offsetX", scenes[i].offsetx);
 				settings.addValue("offsetY", scenes[i].offsety);
+				settings.addValue("AreaMin", scenes[i].touchMinArea);
+				settings.addValue("AreaMax", scenes[i].touchMaxArea);
 			}
 			settings.addValue("contents", scenes[i].contentsFileName);
 			settings.popTag();

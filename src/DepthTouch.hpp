@@ -20,6 +20,8 @@ class DepthTouch
 public:
 	float minT;
 	float maxT;
+	int touchMinArea;
+	int touchMaxArea;
 
 	bool bViewFlip;
 	bool bTouchStart;
@@ -107,6 +109,9 @@ public:
 	{
 		minThreshold = 0;
 		maxThreshold = 0;
+		
+		touchMinArea = 200;
+		touchMaxArea = 500;
 
 		vertices[0].x = 0;
 		vertices[0].y = 0;
@@ -165,11 +170,13 @@ public:
 		sceneChanged();
 	}
 
-	void parameterSetup(float _minThreshold, float _maxThreshold, float _touchPointOffsetx, float _touchPointOffsety)
+	void parameterSetup(float _minThreshold, float _maxThreshold, float _touchPointOffsetx, float _touchPointOffsety, int _touchMinArea, int _touchMaxArea)
 	{
 		minT = _minThreshold;
 		maxT = _maxThreshold;
 		touchPointOffset.set(_touchPointOffsetx, _touchPointOffsety);
+		touchMinArea = _touchMinArea;
+		touchMaxArea = _touchMaxArea;
 	}
 
 	void update(/*float _minThreshold, float _maxThreshold, float _touchPointOffsetx, float _touchPointOffsety*/)
@@ -244,7 +251,8 @@ public:
 				}
 
 				cvDiffImg.setFromPixels(diffMapChar, size.width, size.height);
-				contourFinder.findContours(cvDiffImg, 500, size.width*size.height*0.5, 1, false, false); // touch되는 영역 contour finder
+				//contourFinder.findContours(cvDiffImg, 500, size.width*size.height*0.5, 1, false, false); // touch되는 영역 contour finder
+				contourFinder.findContours(cvDiffImg, touchMinArea, touchMaxArea, 1, false, false); // touch되는 영역 contour finder
 				normalizedTouchPoints.clear(); // 결과 벡터 클리어
 
 				if (contourFinder.nBlobs > 0) // touch가 되는 순간
@@ -529,25 +537,13 @@ public:
 			// 터치용 Debug Images
 			//==============================
 			warpdepthRGB.draw(debugViewport.x - debugViewport.width, debugViewport.y, debugViewport.width, debugViewport.height);
-			//visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
+			visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
 			if (bTouchStart)
 			{
 				cvDiffImg.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
 				contourFinder.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
 			}
-			if (warpedTouchPoint.size() != 0)
-			{
-				ofDrawBitmapString("User Hand Depth Position X: " + ofToString(warpedTouchPoint[0].x), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 60);
-				ofDrawBitmapString("User Hand Depth Position Y: " + ofToString(warpedTouchPoint[0].y), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 80);
-			}
-			ofDrawBitmapString("User Hand Depth Position X offset: " + ofToString(touchPointOffset.x), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 100);
-			ofDrawBitmapString("User Hand Depth Position Y offset: " + ofToString(touchPointOffset.y), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 120);
-			ofDrawBitmapString("Depth touch Min: " + ofToString(minT), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 140);
-			ofDrawBitmapString("Depth touch Max: " + ofToString(maxT), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 160);
-
-			ofDrawBitmapString("width: " + ofToString(debugViewRatio.width), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 180);
-			ofDrawBitmapString("hight: " + ofToString(debugViewRatio.height), debugViewport.x, debugViewport.y + (debugViewport.height * 2) + 200);
-
+			
 			//	터치용 Drag Point 그리기
 			//------------------------------
 			ofSetColor(ofColor::white);
@@ -615,8 +611,11 @@ public:
 		case OF_KEY_F6: minT += 1; break;
 		case OF_KEY_F7: maxT -= 1; break;
 		case OF_KEY_F8: maxT += 1; break;
-
-		parameterSetup(minT, maxT, touchPointOffset.x,touchPointOffset.y);
+		case OF_KEY_F9: touchMinArea -= 20; break;
+		case OF_KEY_F10: touchMinArea += 20; break;
+		case OF_KEY_F11: touchMaxArea -= 20; break;
+		case OF_KEY_F12: touchMaxArea += 20; break;
+		parameterSetup(minT, maxT, touchPointOffset.x,touchPointOffset.y, touchMinArea, touchMaxArea);
 
 		/*case OF_KEY_HOME: debugViewRatio.height += 0.1; break;
 		case OF_KEY_END: debugViewRatio.height -= 0.1; break;
