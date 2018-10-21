@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "ofApp.h"
 #define IMAGE_SIZE 750000
@@ -10,7 +10,7 @@ void ofApp::setup() {
 
 	font.load("verdana.ttf", 30);
 
-	/* �ʱ� �޴� */
+	/* Mode TF setting */
 	home = true;
 	//bVirtualMode = false;
 	bVirtualMode = false;
@@ -680,16 +680,23 @@ void ofApp::keyPressed(int key) {
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
-
+	if (bTouchMode)
+	{
+		if (key == 'r' || key == 'R')
+		{
+			touch.clearDT();
+			touch.refresh();
+		}
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
-	// drag point ���?���̸� ����Ʈ ����
+	/* Scene Image warping DragPoint */
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseMoved(x, y);
 
-	// ��ġ ��忡��?��ġ ���� �����?�信 drag point ����
+	/* Touchable Scene Image warping DragPoint */
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mouseMoved(x, y);
 
@@ -704,11 +711,11 @@ void ofApp::mouseMoved(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	// drag point ���?���̸� ����Ʈ ����
+	/* Scene Image warping DragPoint */
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseDragged(x, y, button);
 
-	// ��ġ ��忡��?��ġ ���� �����?�信 drag point ����
+	/* Touchable Scene Image warping DragPoint */
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mouseDragged(x, y, button);
 
@@ -719,7 +726,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 		this->imgViewer.mouseDragged(x, y);
 		this->imgVirtual.mouseDragged(x, y);
 	}
-	/* ���� ��ġ�� ���ؼ� */
+	/* Virtual window object control*/
 	if (touch_determine > 0) {
 		projMeta->setMovedObjectCoord(
 			touch_determine,
@@ -762,11 +769,11 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-	// drag point ���?���̸� ����Ʈ ����
+	/* Scene Image warping DragPoint */
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mousePressed(x, y, button);
 
-	// ��ġ ��忡��?��ġ ���� �����?�信 drag point ����
+	/* Touchable Scene Image warping DragPoint */
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mousePressed(x, y, button);
 
@@ -777,7 +784,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 		this->imgViewer.mousePressed(x, y);
 		this->imgVirtual.mousePressed(x, y);
 	}
-	/* ���� ��ġ�� ���ؼ� */
+	/* Virtual window object control*/
 	ofRectangle object_region[6];
 
 	for (int i = 1; i < 6; i++) {
@@ -816,11 +823,11 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-	// drag point ���?���̸� ����Ʈ ����
+	/* Scene Image warping DragPoint */
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseReleased(x, y, button);
 
-	// ��ġ ��忡��?��ġ ���� �����?�信 drag point ����
+	/* Touchable Scene Image warping DragPoint */
 	if (sceneManager.currentScene->isTouchable) {
 		touch.mouseReleased(x, y, button);
 	}
