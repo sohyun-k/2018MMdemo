@@ -313,8 +313,7 @@ void ofApp::draw() {
 		//}
 	}
 
-	/* text ���� �� �̹��� ���� �κ� */
-	/* �̹��� ���� �� draw�ϴ� �κ��� one, two, three, four �κ� */
+	/* Mobile commend one, two, three, four */
 	for (int i = 0; i < tcpText.getNumClients(); i++)
 	{
 		if (tcpText.isClientConnected(i))
@@ -366,8 +365,8 @@ void ofApp::draw() {
 		}*/
 		else if (mobileCommand == "one")
 		{
-			backgroundA = recvImage;
-			backgroundA.saveImage("scene1_ver2.jpg", OF_IMAGE_QUALITY_HIGH);
+			//backgroundA = recvImage;
+			//backgroundA.saveImage("scene1_ver2.jpg", OF_IMAGE_QUALITY_HIGH);
 			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('1');
 			bReadyToReceive = true;
@@ -379,18 +378,34 @@ void ofApp::draw() {
 		}
 		else if (mobileCommand == "three")
 		{
-			backgroundA = recvImage;
-			backgroundA.saveImage("scene_2.jpg", OF_IMAGE_QUALITY_HIGH);
+			//backgroundA = recvImage;
+			//backgroundA.saveImage("scene_2.jpg", OF_IMAGE_QUALITY_HIGH);
 			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('3');
 			bReadyToReceive = true;
 		}
 		else if (mobileCommand == "four")
 		{
-			backgroundA = recvImage;
-			backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
+			//backgroundA = recvImage;
+			//backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
 			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
 			keyPressed('4');
+			bReadyToReceive = true;
+		}
+		else if (mobileCommand == "five")
+		{
+			//backgroundA = recvImage;
+			//backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
+			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
+			keyPressed('5');
+			bReadyToReceive = true;
+		}
+		else if (mobileCommand == "six")
+		{
+			//backgroundA = recvImage;
+			//backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
+			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
+			keyPressed('6');
 			bReadyToReceive = true;
 		}
 		else if (mobileCommand == "v")
@@ -402,8 +417,8 @@ void ofApp::draw() {
 		else if (mobileCommand == "touch")
 		{
 			keyPressed('t');
-			keyPressed('r');
-			keyPressed('o');
+			//keyPressed('r');
+			//keyPressed('o');
 			bReadyToReceive = true;
 		}
 		else if (mobileCommand == "train")
@@ -476,21 +491,24 @@ void ofApp::exit() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
 	
-	if (key == 't' || key == 'T')
+	if (sceneManager.currentScene->isTouchable)
 	{
-		touch.clearDT();
-		bTouchMode = !bTouchMode;
-		touch.bTouchStart = false;
-		if (!bTouchMode)
+		if (key == 't' || key == 'T')
 		{
-			touch.bDrawTouchDebugView = false;
-			sceneManager.save();
-			//touch.bTouchStart = false;
+			touch.clearDT();
+			bTouchMode = !bTouchMode;
+			touch.bTouchStart = false;
+			if (!bTouchMode)
+			{
+				touch.bDrawTouchDebugView = false;
+				sceneManager.save();
+				//touch.bTouchStart = false;
+			}
+			else {
+				touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
+			}
 		}
-		else {
-			touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
-		}
-	}	
+	} 
 	if (bTouchMode)
 	{
 		touch.keyPressed(key);
