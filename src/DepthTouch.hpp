@@ -396,9 +396,13 @@ public:
 				currWTP.y = warpedTouchPoint[0].y;
 				float distance;
 				distance = distanceCheck(currWTP.x, currWTP.y, prevWTP.x, prevWTP.y);
-
-				if (distance < 30)
+				//cout << "distance : " << distance << endl;
+				if (distance < 50 )
 				{
+					/*warpedTouchPoint[0].x = prevWTP.x;
+					warpedTouchPoint[0].y = prevWTP.y;
+					prevWTP.x = currWTP.x;
+					prevWTP.y = currWTP.y;*/
 					Point2f temp;
 					temp = removeShake(currWTP.x, currWTP.y, prevWTP.x, prevWTP.y/*, 15*/);
 

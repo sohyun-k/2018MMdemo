@@ -69,7 +69,7 @@ public:
 		//second_neon_image.load("asset_2_neon.png");
 
 		//bkgd_image.load("bkgd_image.png");
-		bkgd_image.load("wall_and_floor_image_5.jpg");
+		//bkgd_image.load("wall_and_floor_image_5.jpg");
 
 		/* 비디오 제외 */
 		//bkgd_video.load("movies/bkgd_video.mp4");
