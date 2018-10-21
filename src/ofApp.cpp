@@ -101,7 +101,7 @@ void ofApp::update() {
 	char *recvText;
 
 	kinect->update();
-
+	
 	if (bMappingMode)
 	{
 		if (b_Mapping)
@@ -385,21 +385,15 @@ void ofApp::draw() {
 			else if (mobileCommand == "touch")
 			{
 				keyPressed('t');
-				//keyPressed('r');
-				//keyPressed('o');
 			}
 			else if (mobileCommand == "train")
 			{
-				//keyPressed('t');
 				keyPressed('r');
-				//keyPressed('o');
 			}
 
 			else if (mobileCommand == "home")
 			{
-				//keyPressed('t');
 				keyPressed('x');
-				//keyPressed('o');
 			}
 		}
 	}
@@ -468,7 +462,7 @@ void ofApp::keyPressed(int key) {
 			{
 				touch.bDrawTouchDebugView = false;
 				sceneManager.save();
-				//touch.bTouchStart = false;
+				touch.clearDT();
 			}
 			else {
 				touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
@@ -484,7 +478,7 @@ void ofApp::keyPressed(int key) {
 			touch.bDrawTouchDebugView = !touch.bDrawTouchDebugView;
 		}
 		if (key == 'r' || key == 'R') {
-			touch.clearDT();
+			//touch.clearDT();
 			touch.refresh();
 		}
 	}
