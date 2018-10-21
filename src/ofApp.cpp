@@ -470,7 +470,7 @@ void ofApp::keyPressed(int key) {
 			{
 				touch.bDrawTouchDebugView = false;
 				sceneManager.save();
-				touch.clearDT();
+				//touch.clearDT();
 			}
 			else {
 				touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
