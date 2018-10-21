@@ -74,6 +74,10 @@ void ofApp::setup() {
 	this->imgWarpManager.testSetup(this->img_test_path);
 	//this->videoWarpManager.testSetup(this->video_test_path);
 	this->imgWarpManager.bDrawDragPoints = true;
+	this->imgViewer.testSetup(this->img_viewer_path);
+	this->imgViewer.bDrawDragPoints = true;
+	this->imgVirtual.testSetup(this->img_virtual_path);
+	this->imgVirtual.bDrawDragPoints = true;
 
 	display_img_num = 0;
 	touch_determine_cnt = 0;
@@ -199,7 +203,7 @@ void ofApp::update() {
 	{
 		if (touch.warpedTouchPoint.size() != 0)
 		{
-			for (int i = 0; i < this->imgWarpManager.mobileNum; i++)
+			for (int i = 0; i < (this->imgWarpManager.mobileNum-1); i++)
 			{
 				if (this->b_warpImgDisplay)
 				{		
@@ -284,7 +288,6 @@ void ofApp::draw() {
 		{
 			this->imgWarpManager.draw();
 		}
-
 	}
 	/* Virtual window mode */
 	if (bVirtualMode)
@@ -292,11 +295,15 @@ void ofApp::draw() {
 		sceneManager.currentScene->draw(true);
 		iPhone->draw();
 		skeletonData->draw();
-
 		if (bkgd_flag)
 			projMeta->draw(headPos, secondUserHandVec);
+		
+		if (this->b_warpImgDisplay)
+		{
+			this->imgVirtual.draw();
+		}
 	}
-
+	
 	/* Map scanning Draw */
 	if (bMappingMode)
 	{
@@ -305,12 +312,11 @@ void ofApp::draw() {
 	/* image viewer Draw */
 	if (bDisplayMode)
 	{
-		//if (display_img_num == 1) {
-		//	sceneManager.currentScene->drawVideo(true);
-		//}
-		//else {
-			sceneManager.currentScene->draw(true);
-		//}
+		sceneManager.currentScene->draw(true);
+		if (this->b_warpImgDisplay)
+		{
+			this->imgViewer.draw();
+		}
 	}
 
 	/* Mobile commend one, two, three, four */
@@ -553,7 +559,7 @@ void ofApp::keyPressed(int key) {
 		//testVirtual = false;
 		bUIMode = !bUIMode;
 		this->b_warpImgDisplay = bUIMode;
-		//keyPressed('w');
+		this->imgWarpingStart = bUIMode;
 		touch.bDrawTouchDebugView = false;
 		touch.clearDT();
 		display_img_num = 6;
@@ -601,12 +607,11 @@ void ofApp::keyPressed(int key) {
 		touch.clearDT();
 		touch.bDrawTouchDebugView = false;
 		bMappingMode = false;
-		//bTouchMode = false;
 		bUIMode = false;
 		bDisplayMode = false;
 		bVirtualMode = true;
-		this->b_warpImgDisplay = false;
-		this->imgWarpingStart = false;
+		this->b_warpImgDisplay = bVirtualMode;
+		this->imgWarpingStart = bVirtualMode;
 		display_img_num = 7;
 		sceneManager.changeCurrentScene(display_img_num);
 		if (sceneManager.currentScene->isTouchable)
@@ -619,7 +624,11 @@ void ofApp::keyPressed(int key) {
 		mapScanning.SaveFile("");
 		sceneManager.save();
 		if (this->imgWarpingStart)
+		{
 			this->imgWarpManager.xmlSave();
+			this->imgViewer.xmlSave();
+			this->imgVirtual.xmlSave();
+		}
 	}
 	if (key == 'f' || key == 'F') {
 		ofToggleFullscreen();
@@ -629,6 +638,8 @@ void ofApp::keyPressed(int key) {
 		sceneManager.setDrawDragPoints(bDrawDragPoints);
 		//this->imgWarpManager.showDragPoints();
 		this->imgWarpManager.bDrawDragPoints = !this->imgWarpManager.bDrawDragPoints;
+		this->imgViewer.bDrawDragPoints = !this->imgViewer.bDrawDragPoints;
+		this->imgVirtual.bDrawDragPoints = !this->imgVirtual.bDrawDragPoints;
 	}
 	if (key == 'm') {
 		//bMappingMode = !bMappingMode;
@@ -651,19 +662,16 @@ void ofApp::keyPressed(int key) {
 	{
 		bMappingMode = false;
 		bTouchMode = false;
+		bUIMode = false;
 		touch.clearDT();
 		touch.bDrawTouchDebugView = false;
 		bDisplayMode = true;
 		bVirtualMode = false;
-		this->b_warpImgDisplay = false;
-		this->imgWarpingStart = false;
-		
+		this->b_warpImgDisplay = bDisplayMode;
+		this->imgWarpingStart = this->b_warpImgDisplay;
+		//keyPressed('w');
 		display_img_num = key - '1';
 		sceneManager.changeCurrentScene(display_img_num);
-		/*if (display_img_num==1)
-		{
-			sceneManager.currentScene->loadVideoContents();
-		}*/
 		ptSystem.bSceneChange = true;
 	}
 
@@ -672,9 +680,9 @@ void ofApp::keyPressed(int key) {
 	{
 		touch.clearDT();
 		touch.bDrawTouchDebugView = false;
-		bMappingMode = false;
-		bDisplayMode = false;
-		bVirtualMode = false;
+		//bMappingMode = false;
+		//bDisplayMode = false;
+		//bVirtualMode = false;
 		this->imgWarpingStart = !this->imgWarpingStart;
 		this->b_warpImgDisplay = !this->b_warpImgDisplay;
 	}
@@ -733,7 +741,11 @@ void ofApp::mouseMoved(int x, int y) {
 
 	// warping
 	if (this->imgWarpingStart)
+	{
 		this->imgWarpManager.mouseMoved(x, y);
+		this->imgViewer.mouseMoved(x,y);
+		this->imgVirtual.mouseMoved(x, y);
+	}
 }
 
 //--------------------------------------------------------------
@@ -748,8 +760,11 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
 	// warping
 	if (this->imgWarpingStart)
+	{
 		this->imgWarpManager.mouseDragged(x, y);
-
+		this->imgViewer.mouseDragged(x, y);
+		this->imgVirtual.mouseDragged(x, y);
+	}
 	/* ���� ��ġ�� ���ؼ� */
 	if (touch_determine > 0) {
 		projMeta->setMovedObjectCoord(
@@ -803,8 +818,11 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 	// warping
 	if (this->imgWarpingStart)
+	{
 		this->imgWarpManager.mousePressed(x, y);
-
+		this->imgViewer.mousePressed(x, y);
+		this->imgVirtual.mousePressed(x, y);
+	}
 	/* ���� ��ġ�� ���ؼ� */
 	ofRectangle object_region[6];
 
@@ -855,8 +873,11 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 	// warping
 	if (this->imgWarpingStart)
+	{
 		this->imgWarpManager.mouseReleased(x, y);
-	
+		this->imgViewer.mouseReleased(x, y);
+		this->imgVirtual.mouseReleased(x, y);
+	}
 	touch_determine = -1;
 }
 

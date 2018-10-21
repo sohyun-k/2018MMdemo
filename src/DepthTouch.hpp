@@ -110,8 +110,8 @@ public:
 		minThreshold = 0;
 		maxThreshold = 0;
 		
-		touchMinArea = 200;
-		touchMaxArea = 500;
+		touchMinArea = 500;
+		touchMaxArea = 800;
 
 		vertices[0].x = 0;
 		vertices[0].y = 0;
@@ -516,28 +516,29 @@ public:
 		//	frameCnt = 0;
 		//	prevWTP.x = 0;
 		//}
-
-		ofPushStyle();
-		ofFill();
-		ofSetColor(ofColor::red);
-		for (int i = 0; i < warpedTouchPoint.size(); ++i)
+		if (warpedTouchPoint.size() != 0)
 		{
+			ofPushStyle();
+			ofFill();
 			ofSetColor(ofColor::red);
-			ofCircle(warpedTouchPoint[0].x, warpedTouchPoint[0].y, 30);					// TODO:
-																						//ofCircle(currWTP.x, currWTP.y, 30);
-			if (warpedTouchPoint.size() == 2) {
-				ofSetColor(ofColor::white);
-				ofCircle(warpedTouchPoint[1].x, warpedTouchPoint[1].y, 30);					// TODO:	
+			for (int i = 0; i < warpedTouchPoint.size(); ++i)
+			{
+				ofSetColor(ofColor::red);
+				ofCircle(warpedTouchPoint[0].x, warpedTouchPoint[0].y, 30);					// TODO:
+																							//ofCircle(currWTP.x, currWTP.y, 30);
+				if (warpedTouchPoint.size() == 2) {
+					ofSetColor(ofColor::white);
+					ofCircle(warpedTouchPoint[1].x, warpedTouchPoint[1].y, 30);					// TODO:	
+				}
 			}
+			ofPopStyle();
 		}
-		ofPopStyle();
-
 		if (bDrawTouchDebugView)
 		{
 			// 터치용 Debug Images
 			//==============================
 			warpdepthRGB.draw(debugViewport.x - debugViewport.width, debugViewport.y, debugViewport.width, debugViewport.height);
-			visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
+			//visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
 			if (bTouchStart)
 			{
 				cvDiffImg.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
@@ -698,7 +699,7 @@ public:
 	Mat		touchMat;							// 학습영상과 실시간 와핑영상의 차 영상
 
 	ofImage warpdepthRGB;
-	ofImage viewColor;
+	//ofImage viewColor;
 
 	Mat	    warpDepth;
 	Mat		warpColor;

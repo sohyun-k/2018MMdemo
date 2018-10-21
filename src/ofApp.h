@@ -88,11 +88,16 @@ class ofApp : public ofBaseApp {
 		vector<string> img_test_path = {
 			"/images/dt/sui_idea_sharing"
 			,"/images/dt/sui_image_viewer"
-			//,"/images/numberimg/3"
+			,"/images/dt/sui"
 			//,"/images/numberimg/4"
 			//,			"/images/background"
 		};
-
+		vector<string> img_viewer_path = {
+			"/images/imgviewer/imag"
+		};
+		vector<string> img_virtual_path = {
+			"/images/vw/idea"
+		};
 		vector<string> video_test_path = {
 			"/images/memory_1",
 			"/images/memory_2",
@@ -108,6 +113,9 @@ class ofApp : public ofBaseApp {
 		};
 
 		WarpImg imgWarpManager;
+		WarpImg imgViewer;
+		WarpImg imgVirtual;
+
 		bool b_warpImgDisplay;
 		bool imgWarpingStart = false;
 		/*WarpVideo videoWarpManager;
