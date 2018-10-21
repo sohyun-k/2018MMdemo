@@ -97,7 +97,6 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-
 	char *recvText;
 
 	kinect->update();
@@ -242,8 +241,12 @@ void ofApp::update() {
 			UI_touch_determine_cnt = 0;
 			UI_touch_determine = -1;
 			switch (caseNum +1) {
-			case 1: keyPressed('v'); break;
-			case 2: keyPressed('1'); break;
+			case 1: keyPressed('v');
+				tcpText.send(0, "v");
+				break;
+			case 2: keyPressed('1');
+				tcpText.send(0, "1");
+				break;
 			//case 3: keyPressed('4'); break;
 			//case 4:  keyPressed('m'); break;
 			}	
@@ -323,6 +326,11 @@ void ofApp::draw() {
 	/* Mobile commend one, two, three, four */
 	if (bReadyToReceive)
 	{
+		if (tcpText.isClientConnected(tcpText.getLastID()))
+		{
+			tcpText.send(tcpText.getLastID(), "");
+		}
+
 		for (int i = 0; i < tcpText.getNumClients(); i++)
 		{
 			if (tcpText.isClientConnected(i))
@@ -520,6 +528,7 @@ void ofApp::keyPressed(int key) {
 	}
 	if (key == 'u' || key == 'U')
 	{
+		tcpText.send(0, "u");
 		bMappingMode = false;
 		bDisplayMode = false;
 		bVirtualMode = false;
