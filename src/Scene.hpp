@@ -237,7 +237,7 @@ public:
 	{
 		// 이미지 그리기
 		if (bDrawContents) {
-			ofEnableAlphaBlending();
+			//ofEnableAlphaBlending();
 			warpImg.draw(0, 0, warpImg.width, warpImg.height);
 		}
 		if (b_draw) {
