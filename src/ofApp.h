@@ -50,13 +50,11 @@ class ofApp : public ofBaseApp {
 		void sendFile(ofFile file, int fileBytesToSend);
 		void showPanTiltAngle();
 		void showVirutalWindowInfo();
+		void showSUIInfo();
 		
-		VisionDeviceKinect2* kinect;
-				
+		VisionDeviceKinect2* kinect;	
 		PanTiltSystem ptSystem;
-				
 		MapScanning mapScanning;
-
 		SceneManager sceneManager;
 
 		/* TCP network */
@@ -65,47 +63,33 @@ class ofApp : public ofBaseApp {
 		ofxTCPServer tcpImage; //tcp image manager
 		ofxTCPServer tcpText; // tcp text manager
 		ofxTCPServer tcpServer;	//tcp server
-
-		//ClientInfo clientInfo;
-
-		vector <string> storeText;
-		//vector <ofImage> storeImage;
-		
-		bool b_touch;
-		bool frame_touch;
-		//Mat touchDepth;
-		//Mat touchColor;
-		int touch_cnt = 0;
-		int touch_cnt2 = 0;
-		bool bDrawColorMat;
-
+		char recv[50];
+				
 		bool	bDrawDragPoints;
 		bool	bDrawContents;	
+		bool	bTouchMode;
+		bool	bMappingMode;
+		bool	b_Mapping;
+		bool	bVirtualMode;
+		bool	bDisplayMode; 
+		bool	bUIMode;
 
-		char recv[50];
-
-		bool b_Mapping;
-		//bool mapping_mode;
-		
-		// yjp
-		bool bTouchMode, bMappingMode, bDisplayMode, bUIMode;
+		/* Spatial Touch */
+		DepthTouch touch;
+		int touch_determine;
+		int touch_determine_cnt;
 		ofRectangle UI_region[4];
-		//Scene backGroundImg;
-		int num_img = 0;
-		//vector<string> img_path = {
-		//	//"/images/scene_1.jpg",
-		//	"/images/scene1_ver2.jpg",
-		//	"/images/scene_2.jpg",
-		//	"/images/scene_3.jpg",
-		//	"/images/scene_4.jpg",
-		//	"/images/background.jpg"
-		//};
+		int UI_touch_determine;
+		int UI_touch_determine_cnt;
+		
+		/* Image viewer */
+		int display_img_num;
 
 		vector<string> img_test_path = {
-			"/images/numberimg/1",
-			"/images/numberimg/2",
-			"/images/numberimg/3",
-			"/images/numberimg/4"
+			"/images/dt/sui_idea_sharing"
+			,"/images/dt/sui_image_viewer"
+			//,"/images/numberimg/3"
+			//,"/images/numberimg/4"
 			//,			"/images/background"
 		};
 
@@ -124,21 +108,14 @@ class ofApp : public ofBaseApp {
 		};
 
 		WarpImg imgWarpManager;
-		bool b_warpImgDisplay = false;
+		bool b_warpImgDisplay;
 		bool imgWarpingStart = false;
-		WarpVideo videoWarpManager;
+		/*WarpVideo videoWarpManager;
 		bool b_warpVideoDisplay = false;
-		bool videoWarpingStart = false;
+		bool videoWarpingStart = false;*/
 
-		int display_img_num;
-
-		int touch_determine;
-		int touch_determine_cnt;
-	
-		int UI_touch_determine;
-		int UI_touch_determine_cnt;
-
-		//virtual window
+		
+		/* virtual window */
 		PhoneToDesktop* iPhone;
 		ProjectorMetaphor* projMeta;
 		SkeletonFromKinect* skeletonData;
@@ -224,6 +201,4 @@ class ofApp : public ofBaseApp {
 		MenuMaker mHome, mMap, mWindow, mPantilt, mimgReceive, mReceiving, mConstruct, mSelect;
 
 		bool bReadyToReceive = true;
-
-		DepthTouch touch;
 };

@@ -31,6 +31,9 @@ public:
 	float max;
 	float offsetx;
 	float offsety;
+	int touchMinArea;
+	int touchMaxArea;
+
 	/************************************************************************/
 	/* Contents 이미지 파일명과 와핑될 이미지								*/
 	/************************************************************************/
@@ -234,7 +237,7 @@ public:
 	{
 		// 이미지 그리기
 		if (bDrawContents) {
-			ofEnableAlphaBlending();
+			//ofEnableAlphaBlending();
 			warpImg.draw(0, 0, warpImg.width, warpImg.height);
 		}
 		if (b_draw) {
