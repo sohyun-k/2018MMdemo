@@ -395,12 +395,24 @@ void ofApp::draw() {
 				//keyPressed('o');
 			}
 
+			else if (mobileCommand == "debug") 
+			{
+				keyPressed('o');
+			}
+
 			else if (mobileCommand == "home")
 			{
 				//keyPressed('t');
 				keyPressed('x');
 				//keyPressed('o');
+			}			
+
+			else if (mobileCommand == "uimode")
+			{
+				keyPressed('u');
 			}
+
+
 		}
 	}
 
