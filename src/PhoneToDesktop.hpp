@@ -79,7 +79,13 @@ public :
 		string packet = udpMessage;*/
 
 		string tcpMessage;
-		tcpMessage = tcpReceiver.receive(tcpReceiver.getLastID() - 1);
+		for (int i = 0; i < tcpReceiver.getNumClients(); i++)
+		{
+			if (tcpReceiver.isClientConnected(i))
+			{
+				tcpMessage = tcpReceiver.receive(tcpReceiver.getLastID() - 1);
+			}
+		}
 		
 		if (tcpMessage != "") {
 
