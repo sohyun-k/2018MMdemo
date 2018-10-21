@@ -470,7 +470,6 @@ void ofApp::keyPressed(int key) {
 			{
 				touch.bDrawTouchDebugView = false;
 				sceneManager.save();
-				//touch.clearDT();
 			}
 			else {
 				touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
@@ -689,14 +688,14 @@ void ofApp::keyPressed(int key) {
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
-	if (bTouchMode)
-	{
-		if (key == 'r' || key == 'R')
-		{
-			touch.clearDT();
-			touch.refresh();
-		}
-	}
+	//if (bTouchMode)
+	//{
+	//	if (key == 'r' || key == 'R')
+	//	{
+	//		//touch.clearDT();
+	//		touch.refresh();
+	//	}
+	//}
 }
 
 //--------------------------------------------------------------
