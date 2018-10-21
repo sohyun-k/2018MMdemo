@@ -137,7 +137,7 @@
         <offsetY>0.000000000</offsetY>
         <AreaMin>300</AreaMin>
         <AreaMax>500</AreaMax>
-        <contents>wall_and_floor_image_5.jpg</contents>
+        <contents>/images/vw/wall_and_floor_image_5.jpg</contents>
     </Scene>
     <Scene>
         <pan>0</pan>
