@@ -398,6 +398,29 @@ void ofApp::draw() {
 			keyPressed('v');
 			bReadyToReceive = true;
 		}
+
+		else if (mobileCommand == "touch")
+		{
+			keyPressed('t');
+			keyPressed('r');
+			keyPressed('o');
+			bReadyToReceive = true;
+		}
+		else if (mobileCommand == "train")
+		{
+			//keyPressed('t');
+			keyPressed('r');
+			//keyPressed('o');
+			bReadyToReceive = true;
+		}
+
+		else if (mobileCommand == "home")
+		{
+			//keyPressed('t');
+			keyPressed('x');
+			//keyPressed('o');
+			bReadyToReceive = true;
+		}
 	}
 
 	/* Virtual window touch test */
@@ -591,15 +614,15 @@ void ofApp::keyPressed(int key) {
 	}
 	if (key == 'm') {
 		//bMappingMode = !bMappingMode;
-			bMappingMode = true;
-			bDisplayMode = false;
-			bUIMode = false;
-			bVirtualMode = false;
-			bTouchMode = false;
-			touch.clearDT();
-			touch.bDrawTouchDebugView = false;
-			this->b_warpImgDisplay = false;
-			this->imgWarpingStart = false;
+		bMappingMode = true;
+		bDisplayMode = false;
+		bUIMode = false;
+		bVirtualMode = false;
+		bTouchMode = false;
+		touch.clearDT();
+		touch.bDrawTouchDebugView = false;
+		this->b_warpImgDisplay = false;
+		this->imgWarpingStart = false;
 	}
 	if (key == 'M')
 	{
@@ -637,6 +660,18 @@ void ofApp::keyPressed(int key) {
 		this->imgWarpingStart = !this->imgWarpingStart;
 		this->b_warpImgDisplay = !this->b_warpImgDisplay;
 	}
+
+	if (key == 'x' || key == 'X') {
+		bMappingMode = false;
+		bDisplayMode = false;
+		bUIMode = false;
+		bVirtualMode = false;
+		bTouchMode = false;
+		touch.clearDT();
+		touch.bDrawTouchDebugView = false;
+		this->b_warpImgDisplay = false;
+		this->imgWarpingStart = false;
+	}
 	//if (key == 'x' || key == 'X')
 	//{
 	//	bTouchMode = false;
@@ -670,11 +705,11 @@ void ofApp::keyReleased(int key) {
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
-	// drag point ��� ���̸� ����Ʈ ����
+	// drag point ���?���̸� ����Ʈ ����
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseMoved(x, y);
 
-	// ��ġ ��忡�� ��ġ ���� ����� �信 drag point ����
+	// ��ġ ��忡��?��ġ ���� �����?�信 drag point ����
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mouseMoved(x, y);
 
@@ -685,11 +720,11 @@ void ofApp::mouseMoved(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	// drag point ��� ���̸� ����Ʈ ����
+	// drag point ���?���̸� ����Ʈ ����
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseDragged(x, y, button);
 
-	// ��ġ ��忡�� ��ġ ���� ����� �信 drag point ����
+	// ��ġ ��忡��?��ġ ���� �����?�信 drag point ����
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mouseDragged(x, y, button);
 
@@ -740,11 +775,11 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-	// drag point ��� ���̸� ����Ʈ ����
+	// drag point ���?���̸� ����Ʈ ����
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mousePressed(x, y, button);
 
-	// ��ġ ��忡�� ��ġ ���� ����� �信 drag point ����
+	// ��ġ ��忡��?��ġ ���� �����?�信 drag point ����
 	if (sceneManager.currentScene->isTouchable && touch.bDrawTouchDebugView)
 		touch.mousePressed(x, y, button);
 
@@ -791,11 +826,11 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-	// drag point ��� ���̸� ����Ʈ ����
+	// drag point ���?���̸� ����Ʈ ����
 	if (sceneManager.currentScene->bDrawDragPoints)
 		sceneManager.currentScene->mouseReleased(x, y, button);
 
-	// ��ġ ��忡�� ��ġ ���� ����� �信 drag point ����
+	// ��ġ ��忡��?��ġ ���� �����?�信 drag point ����
 	if (sceneManager.currentScene->isTouchable) {
 		touch.mouseReleased(x, y, button);
 	}
