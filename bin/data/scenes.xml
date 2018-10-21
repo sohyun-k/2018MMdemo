@@ -117,10 +117,10 @@
         <touchable>1</touchable>
         <x>25.000000000</x>
         <y>90.000000000</y>
-        <x>1319.000000000</x>
+        <x>1879.000000000</x>
         <y>81.000000000</y>
-        <x>1312.000000000</x>
-        <y>980.000000000</y>
+        <x>1877.000000000</x>
+        <y>979.000000000</y>
         <x>15.000000000</x>
         <y>995.000000000</y>
         <touch_x>404.000000000</touch_x>
@@ -137,7 +137,7 @@
         <offsetY>0.000000000</offsetY>
         <AreaMin>300</AreaMin>
         <AreaMax>500</AreaMax>
-        <contents>/images/vw/wall_and_floor_image_5.jpg</contents>
+        <contents>wall_and_floor_image_5.jpg</contents>
     </Scene>
     <Scene>
         <pan>0</pan>
