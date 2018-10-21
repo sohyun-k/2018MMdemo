@@ -28,6 +28,7 @@ void ofApp::setup() {
 	tcpFile.setup(19133, true);
 	tcpImage.setup(19134, true);
 	tcpText.setup(19135, true);
+	bReadyToReceive = true;
 
 	/* Kinect 2 */
 	kinect = new VisionDeviceKinect2();
