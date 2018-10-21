@@ -28,6 +28,7 @@ void ofApp::setup() {
 	tcpFile.setup(19133, true);
 	tcpImage.setup(19134, true);
 	tcpText.setup(19135, true);
+	bReadyToReceive = true;
 
 	/* Kinect 2 */
 	kinect = new VisionDeviceKinect2();
@@ -314,127 +315,86 @@ void ofApp::draw() {
 	}
 
 	/* Mobile commend one, two, three, four */
-	for (int i = 0; i < tcpText.getNumClients(); i++)
+	if (bReadyToReceive)
 	{
-		if (tcpText.isClientConnected(i))
+		for (int i = 0; i < tcpText.getNumClients(); i++)
 		{
-			mobileCommand = tcpText.receive(i);
-			/*if (bReadyToReceive) {
+			if (tcpText.isClientConnected(i))
+			{
 				mobileCommand = tcpText.receive(i);
-				//receiveImage(recvImage, IMAGE_SIZE);
+			}
+			if (mobileCommand == "d")
+			{
+				KeyDown();
+			}
+			else if (mobileCommand == "u")
+			{
+				KeyUp();
+			}
+			else if (mobileCommand == "r")
+			{
+				KeyRight();
+			}
+			else if (mobileCommand == "l")
+			{
+				KeyLeft();
+			}
+			else if (mobileCommand == "m")
+			{
+				keyPressed('m');
+			}
+			else if (mobileCommand == "mapping")
+			{
+				b_Mapping = true;
 				bReadyToReceive = false;
-			}*/
-		}
-		if (mobileCommand == "d")
-		{
-			KeyDown();
-			bReadyToReceive = !bReadyToReceive;
-		}
-		else if (mobileCommand == "u")
-		{
-			KeyUp();
-			bReadyToReceive = !bReadyToReceive;
-		}
-		else if (mobileCommand == "r")
-		{
-			KeyRight();
-			bReadyToReceive = !bReadyToReceive;
-		}
-		else if (mobileCommand == "l")
-		{
-			KeyLeft();
-			bReadyToReceive = !bReadyToReceive;
-		}
-		else if (mobileCommand == "m")
-		{
-			keyPressed('m');
-			//bMappingMode = true;
-		}
-		else if (mobileCommand == "mapping")
-		{
-			b_Mapping = true;
+			}
+			else if (mobileCommand == "one")
+			{
+				keyPressed('1');
+			}
+			else if (mobileCommand == "two")
+			{
+				keyPressed('2');
+			}
+			else if (mobileCommand == "three")
+			{
+				keyPressed('3');
+			}
+			else if (mobileCommand == "four")
+			{
+				keyPressed('4');
+			}
+			else if (mobileCommand == "five")
+			{
+				keyPressed('5');
+			}
+			else if (mobileCommand == "six")
+			{
+				keyPressed('6');
+			}
+			else if (mobileCommand == "v")
+			{
+				keyPressed('v');
+			}
+			else if (mobileCommand == "touch")
+			{
+				keyPressed('t');
+				//keyPressed('r');
+				//keyPressed('o');
+			}
+			else if (mobileCommand == "train")
+			{
+				//keyPressed('t');
+				keyPressed('r');
+				//keyPressed('o');
+			}
 
-		}
-		/*else if (mobileCommand == "sendme")
-		{
-			char* fileSize;
-			tcpText.send(tcpText.getLastID(), itoa(sendingFile.getSize(), fileSize, 10));
-			sendFile(sendingFile, sendingFile.getSize());
-			cout << "Send point cloud data complete!" << endl;
-			bReadyToReceive = !bReadyToReceive;
-		}*/
-		else if (mobileCommand == "one")
-		{
-			//backgroundA = recvImage;
-			//backgroundA.saveImage("scene1_ver2.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
-			keyPressed('1');
-			bReadyToReceive = true;
-		}
-		else if (mobileCommand == "two")
-		{
-			keyPressed('2');
-			bReadyToReceive = true;
-		}
-		else if (mobileCommand == "three")
-		{
-			//backgroundA = recvImage;
-			//backgroundA.saveImage("scene_2.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
-			keyPressed('3');
-			bReadyToReceive = true;
-		}
-		else if (mobileCommand == "four")
-		{
-			//backgroundA = recvImage;
-			//backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
-			keyPressed('4');
-			bReadyToReceive = true;
-		}
-		else if (mobileCommand == "five")
-		{
-			//backgroundA = recvImage;
-			//backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
-			keyPressed('5');
-			bReadyToReceive = true;
-		}
-		else if (mobileCommand == "six")
-		{
-			//backgroundA = recvImage;
-			//backgroundA.saveImage("scene_3.jpg", OF_IMAGE_QUALITY_HIGH);
-			//backgroundA.draw(10, 50, IMAGE_WIDTH, IMAGE_HEIGHT);
-			keyPressed('6');
-			bReadyToReceive = true;
-		}
-		else if (mobileCommand == "v")
-		{
-			keyPressed('v');
-			bReadyToReceive = true;
-		}
-
-		else if (mobileCommand == "touch")
-		{
-			keyPressed('t');
-			//keyPressed('r');
-			//keyPressed('o');
-			bReadyToReceive = true;
-		}
-		else if (mobileCommand == "train")
-		{
-			//keyPressed('t');
-			keyPressed('r');
-			//keyPressed('o');
-			bReadyToReceive = true;
-		}
-
-		else if (mobileCommand == "home")
-		{
-			//keyPressed('t');
-			keyPressed('x');
-			//keyPressed('o');
-			bReadyToReceive = true;
+			else if (mobileCommand == "home")
+			{
+				//keyPressed('t');
+				keyPressed('x');
+				//keyPressed('o');
+			}
 		}
 	}
 
