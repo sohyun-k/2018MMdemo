@@ -87,28 +87,28 @@
         <pan>98</pan>
         <tilt>129</tilt>
         <touchable>1</touchable>
-        <x>161.000000000</x>
-        <y>130.000000000</y>
-        <x>1603.000000000</x>
-        <y>141.000000000</y>
-        <x>1620.000000000</x>
-        <y>968.000000000</y>
-        <x>150.000000000</x>
-        <y>800.000000000</y>
-        <touch_x>386.000000000</touch_x>
-        <touch_y>174.000000000</touch_y>
-        <touch_x>216.000000000</touch_x>
-        <touch_y>178.000000000</touch_y>
-        <touch_x>202.000000000</touch_x>
-        <touch_y>324.000000000</touch_y>
-        <touch_x>388.000000000</touch_x>
-        <touch_y>338.000000000</touch_y>
-        <min>20.000000000</min>
-        <max>25.000000000</max>
+        <x>25.000000000</x>
+        <y>90.000000000</y>
+        <x>1319.000000000</x>
+        <y>81.000000000</y>
+        <x>1312.000000000</x>
+        <y>980.000000000</y>
+        <x>15.000000000</x>
+        <y>995.000000000</y>
+        <touch_x>102.000000000</touch_x>
+        <touch_y>304.000000000</touch_y>
+        <touch_x>476.000000000</touch_x>
+        <touch_y>311.000000000</touch_y>
+        <touch_x>470.000000000</touch_x>
+        <touch_y>94.000000000</touch_y>
+        <touch_x>102.000000000</touch_x>
+        <touch_y>99.000000000</touch_y>
+        <min>22.000000000</min>
+        <max>28.000000000</max>
         <offsetX>0.000000000</offsetX>
         <offsetY>0.000000000</offsetY>
-        <AreaMin>180</AreaMin>
-        <AreaMax>380</AreaMax>
+        <AreaMin>260</AreaMin>
+        <AreaMax>540</AreaMax>
         <contents>/images/dt/background.jpg</contents>
     </Scene>
     <Scene>
@@ -123,20 +123,20 @@
         <y>980.000000000</y>
         <x>15.000000000</x>
         <y>995.000000000</y>
-        <touch_x>404.000000000</touch_x>
-        <touch_y>151.000000000</touch_y>
-        <touch_x>267.000000000</touch_x>
-        <touch_y>163.000000000</touch_y>
-        <touch_x>271.000000000</touch_x>
-        <touch_y>261.000000000</touch_y>
-        <touch_x>400.000000000</touch_x>
-        <touch_y>262.000000000</touch_y>
-        <min>20.000000000</min>
-        <max>25.000000000</max>
+        <touch_x>102.000000000</touch_x>
+        <touch_y>304.000000000</touch_y>
+        <touch_x>476.000000000</touch_x>
+        <touch_y>311.000000000</touch_y>
+        <touch_x>470.000000000</touch_x>
+        <touch_y>94.000000000</touch_y>
+        <touch_x>102.000000000</touch_x>
+        <touch_y>99.000000000</touch_y>
+        <min>22.000000000</min>
+        <max>28.000000000</max>
         <offsetX>0.000000000</offsetX>
         <offsetY>0.000000000</offsetY>
-        <AreaMin>300</AreaMin>
-        <AreaMax>500</AreaMax>
+        <AreaMin>260</AreaMin>
+        <AreaMax>540</AreaMax>
         <contents>/images/vw/wall_and_floor_image_5.jpg</contents>
     </Scene>
     <Scene>
