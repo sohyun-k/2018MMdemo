@@ -86,12 +86,18 @@ public:
 		warpedTouchPoint.clear();
 		bTrain = false;
 		bTouchStart = false;
-		visionDeviceManager->setFlipVertical(true);
-		visionDeviceManager->setFlipHorizontal(false);
-		warpdepthRGB.clear();
-		cvDiffImg.clear();
-		contourFinder.resetAnchor();
+		frameCnt = 0;
+		touchMat.empty();
+		warpMat.empty();
+		trainedMat.empty();
+		//visionDeviceManager->setFlipVertical(true);
+		//visionDeviceManager->setFlipHorizontal(false);
+		//warpdepthRGB.clear();
+		//cvDiffImg.clear();
+		//contourFinder.resetAnchor();
+		visionSet(false);
 	}
+
 	void visionSet(bool bTouch)
 	{
 		if (bTouch)
@@ -113,6 +119,7 @@ public:
 		touchMinArea = 500;
 		touchMaxArea = 800;
 
+		frameCnt = 0;
 		vertices[0].x = 0;
 		vertices[0].y = 0;
 
@@ -134,8 +141,9 @@ public:
 
 		warpMat = Mat(size.height, size.width, depthShortMat.type());
 		touchMat = Mat(size.height, size.width, depthShortMat.type());
+		
+		//warpDepth = Mat(size.height, size.width, depthShortMat.type());
 
-		warpDepth = Mat(size.height, size.width, depthShortMat.type());
 		//warpColor = Mat(size.height, size.width, colorMat.type());
 
 		//currWarpMat = Mat(size.height, size.width, depthShortMat.type());
@@ -161,7 +169,7 @@ public:
 		debugViewRatio.height = (float)debugViewport.height / (float)visionDeviceManager->getDepthHeight();
 		cout << "debugViewRatio.width = " << debugViewRatio.width << "debugViewRatio.height = " << debugViewRatio.height <<endl;
 		touchPointOffset.set(0, 0);
-		
+		sceneChanged();
 	}
 
 	void setCurrentScene(/*TouchBGScene * current*/Scene * current)
@@ -191,8 +199,8 @@ public:
 		// 다시 되네???? 음.. currentScene에서 문제가 생겼나봄
 		//if (bUpdate)
 		//{
-			visionDeviceManager->setFlipVertical(false);
-			visionDeviceManager->setFlipHorizontal(true);
+			/*visionDeviceManager->setFlipVertical(false);
+			visionDeviceManager->setFlipHorizontal(true);*/
 			// color image 너무 큼
 			//colorMat = visionDeviceManager->getColorMat();
 			depthShortMat = visionDeviceManager->getDepthShortMat();
@@ -218,18 +226,21 @@ public:
 			}
 			else {*/
 			warpPerspective(depthShortMat, warpMat, homography, size, INTER_CUBIC);
-			warpPerspective(depthShortMat, warpDepth, homography, size, INTER_CUBIC);
+			//warpPerspective(depthShortMat, warpDepth, homography, size, INTER_CUBIC);
+			//warpDepth = warpMat.clone();
 			//}
 
 			Mat warpdepth8;
-			depth162depth8Color(warpDepth, warpdepth8, 500, 4500);
+			//depth162depth8Color(warpDepth, warpdepth8, 500, 4500);
+			depth162depth8Color(warpMat, warpdepth8, 500, 4500);
 			warpdepthRGB.setFromPixels(warpdepth8.data, size.width, size.height, OF_IMAGE_COLOR);
 	//	}
+			
 			if (bTrain) {
 				ofLogNotice("KinectTouch: Training...");
-				cvDiffImg.clear();
-				cvDiffImg.allocate(size.width, size.height);
-				contourFinder.resetAnchor();
+				//cvDiffImg.clear();
+				//cvDiffImg.allocate(size.width, size.height);
+				//contourFinder.resetAnchor();
 				trainedMat = warpMat.clone();
 				bTouchStart = true;
 				bTrain = false;
@@ -280,6 +291,7 @@ public:
 							normalizedTouchPoints.push_back(p);
 						}
 					}
+					//cout << "Coutour Finder AREA = " << contourFinder.blobs[0].area << endl;
 				}
 				else {
 					bDetect = false;
@@ -542,7 +554,7 @@ public:
 			// 터치용 Debug Images
 			//==============================
 			warpdepthRGB.draw(debugViewport.x - debugViewport.width, debugViewport.y, debugViewport.width, debugViewport.height);
-			//visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
+			visionDeviceManager->getColorImage().draw(debugViewport.x, debugViewport.y, debugViewport.width, debugViewport.height);
 			if (bTouchStart)
 			{
 				cvDiffImg.draw(debugViewport.x, debugViewport.y + debugViewport.height, debugViewport.width, debugViewport.height);
@@ -575,9 +587,12 @@ public:
 	void refresh()
 	{
 		clearDT();
+		update();
 		//bTouchStart = false;
 		bTrain = true;
 	}
+
+	
 	//void exit()
 	//{
 	//	//visionDeviceManager->exit();

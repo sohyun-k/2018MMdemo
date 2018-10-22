@@ -397,6 +397,8 @@ void ofApp::draw() {
 			else if (mobileCommand == "train")
 			{
 				keyPressed('r');
+				Sleep(20);
+				keyReleased('r');
 			}
 
 			else if (mobileCommand == "debug") 
@@ -480,11 +482,12 @@ void ofApp::keyPressed(int key) {
 			bTouchMode = !bTouchMode;
 			touch.bTouchStart = false;
 			if (!bTouchMode)
-			{
+			{	
 				touch.bDrawTouchDebugView = false;
 				sceneManager.save();
 			}
 			else {
+				touch.visionSet(true);
 				touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
 			}
 		}
@@ -498,8 +501,9 @@ void ofApp::keyPressed(int key) {
 			touch.bDrawTouchDebugView = !touch.bDrawTouchDebugView;
 		}
 		if (key == 'r' || key == 'R') {
-			//touch.clearDT();
 			touch.refresh();
+			//touch.update();
+			//bReadyToReceive = false;
 		}
 	}
 	if (bVirtualMode)
@@ -701,14 +705,11 @@ void ofApp::keyPressed(int key) {
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
-	//if (bTouchMode)
-	//{
-	//	if (key == 'r' || key == 'R')
-	//	{
-	//		//touch.clearDT();
-	//		touch.refresh();
-	//	}
-	//}
+	if (key == 'r' || key == 'R') {
+		touch.refresh();
+		//touch.update();
+		//bReadyToReceive = false;
+	}
 }
 
 //--------------------------------------------------------------
