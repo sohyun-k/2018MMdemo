@@ -95,14 +95,14 @@
         <y>980.000000000</y>
         <x>15.000000000</x>
         <y>995.000000000</y>
-        <touch_x>102.000000000</touch_x>
-        <touch_y>304.000000000</touch_y>
-        <touch_x>476.000000000</touch_x>
-        <touch_y>311.000000000</touch_y>
-        <touch_x>470.000000000</touch_x>
-        <touch_y>94.000000000</touch_y>
-        <touch_x>102.000000000</touch_x>
-        <touch_y>99.000000000</touch_y>
+        <touch_x>186.000000000</touch_x>
+        <touch_y>144.000000000</touch_y>
+        <touch_x>353.000000000</touch_x>
+        <touch_y>136.000000000</touch_y>
+        <touch_x>361.000000000</touch_x>
+        <touch_y>281.000000000</touch_y>
+        <touch_x>201.000000000</touch_x>
+        <touch_y>273.000000000</touch_y>
         <min>22.000000000</min>
         <max>28.000000000</max>
         <offsetX>0.000000000</offsetX>
@@ -123,14 +123,14 @@
         <y>980.000000000</y>
         <x>15.000000000</x>
         <y>995.000000000</y>
-        <touch_x>102.000000000</touch_x>
-        <touch_y>304.000000000</touch_y>
-        <touch_x>476.000000000</touch_x>
-        <touch_y>311.000000000</touch_y>
-        <touch_x>470.000000000</touch_x>
-        <touch_y>94.000000000</touch_y>
-        <touch_x>102.000000000</touch_x>
-        <touch_y>99.000000000</touch_y>
+        <touch_x>241.000000000</touch_x>
+        <touch_y>283.000000000</touch_y>
+        <touch_x>402.000000000</touch_x>
+        <touch_y>299.000000000</touch_y>
+        <touch_x>405.000000000</touch_x>
+        <touch_y>149.000000000</touch_y>
+        <touch_x>250.000000000</touch_x>
+        <touch_y>133.000000000</touch_y>
         <min>22.000000000</min>
         <max>28.000000000</max>
         <offsetX>0.000000000</offsetX>

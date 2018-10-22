@@ -95,7 +95,7 @@ public:
 		//warpdepthRGB.clear();
 		//cvDiffImg.clear();
 		//contourFinder.resetAnchor();
-		visionSet(false);
+		//visionSet(false);
 	}
 
 	void visionSet(bool bTouch)

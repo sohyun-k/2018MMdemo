@@ -487,7 +487,7 @@ void ofApp::keyPressed(int key) {
 				sceneManager.save();
 			}
 			else {
-				touch.visionSet(true);
+				//touch.visionSet(true);
 				touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
 			}
 		}
