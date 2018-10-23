@@ -207,11 +207,19 @@ void ofApp::update() {
 			{
 				if (this->b_warpImgDisplay)
 				{
-					UI_region[i].set(
+					/* 그림 정방향인 경우 */
+					/*UI_region[i].set(
 						this->imgWarpManager.mobileVertices.at(i).vertices[0].x,
 						this->imgWarpManager.mobileVertices.at(i).vertices[0].y,
 						abs(this->imgWarpManager.mobileVertices.at(i).vertices[2].x - this->imgWarpManager.mobileVertices.at(i).vertices[0].x),
+						abs(this->imgWarpManager.mobileVertices.at(i).vertices[2].y - this->imgWarpManager.mobileVertices.at(i).vertices[0].y));*/
+					/* 그림 역방향인 경우 */
+					UI_region[i].set(
+						this->imgWarpManager.mobileVertices.at(i).vertices[2].x,
+						this->imgWarpManager.mobileVertices.at(i).vertices[2].y,
+						abs(this->imgWarpManager.mobileVertices.at(i).vertices[2].x - this->imgWarpManager.mobileVertices.at(i).vertices[0].x),
 						abs(this->imgWarpManager.mobileVertices.at(i).vertices[2].y - this->imgWarpManager.mobileVertices.at(i).vertices[0].y));
+
 					if (UI_region[i].inside(touch.warpedTouchPoint[0].x, touch.warpedTouchPoint[0].y))
 					{
 
@@ -292,6 +300,15 @@ void ofApp::draw() {
 		{
 			this->imgWarpManager.draw();
 		}
+		/* UI rectangle region Draw */
+
+			for (int i = 0; i < 4; i++)
+			{
+			//UI_region[i].x, UI_region[i].y
+			//ofRect.draw(UI_region[i].x, UI_region[i].y, UI_region[i].getWidth(), UI_region[i].getHeight());
+				ofDrawRectangle(UI_region[i].x, UI_region[i].y, UI_region[i].getWidth(), UI_region[i].getHeight());
+			}
+
 	}
 	/* Virtual window mode */
 	if (bVirtualMode)
@@ -438,6 +455,9 @@ void ofApp::draw() {
 		touch.draw();
 		showSUIInfo();
 	}
+	
+		
+
 }
 
 void ofApp::exit() {
