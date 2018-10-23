@@ -95,6 +95,7 @@
         <y>980.000000000</y>
         <x>15.000000000</x>
         <y>995.000000000</y>
+<<<<<<< Updated upstream
         <touch_x>186.000000000</touch_x>
         <touch_y>144.000000000</touch_y>
         <touch_x>353.000000000</touch_x>
@@ -103,6 +104,16 @@
         <touch_y>281.000000000</touch_y>
         <touch_x>201.000000000</touch_x>
         <touch_y>273.000000000</touch_y>
+=======
+        <touch_x>102.000000000</touch_x>
+        <touch_y>304.000000000</touch_y>
+        <touch_x>247.000000000</touch_x>
+        <touch_y>306.000000000</touch_y>
+        <touch_x>247.000000000</touch_x>
+        <touch_y>226.000000000</touch_y>
+        <touch_x>108.000000000</touch_x>
+        <touch_y>229.000000000</touch_y>
+>>>>>>> Stashed changes
         <min>22.000000000</min>
         <max>28.000000000</max>
         <offsetX>0.000000000</offsetX>
