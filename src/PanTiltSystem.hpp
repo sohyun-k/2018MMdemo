@@ -6,7 +6,7 @@
 
 #define PAN_PIN 9
 #define TILT_PIN 11
-#define PAN_DEFAULT 90 //원래 70
+#define PAN_DEFAULT 90//원래 70
 #define TILT_DEFAULT 127 //원래 69
 #define ORIGINAL_VERSION
 //#define MINI_VERSION
@@ -37,7 +37,8 @@ public:
 
 
 		this->panAngle = PAN_DEFAULT;
-		this->tiltAngle = TILT_DEFAULT;
+		this->tiltAngle = 
+			TILT_DEFAULT;
 		this->prePan = PAN_DEFAULT;
 		this->preTilt = TILT_DEFAULT;
 		cout << "setup PAN = " << this->panAngle << "     setup Tilt = " << this->tiltAngle << endl;

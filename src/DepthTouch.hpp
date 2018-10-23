@@ -346,7 +346,7 @@ public:
 			}
 		
 	}
-
+	
 	void depth162depth8Color(Mat& src, Mat& dest, double minv, double maxv)
 	{
 		Mat depthMat;
@@ -637,12 +637,11 @@ public:
 		case OF_KEY_F12: touchMaxArea += 20; break;
 		parameterSetup(minT, maxT, touchPointOffset.x,touchPointOffset.y, touchMinArea, touchMaxArea);
 
-		/*case OF_KEY_HOME: debugViewRatio.height += 0.1; break;
-		case OF_KEY_END: debugViewRatio.height -= 0.1; break;
-		case OF_KEY_PAGE_DOWN: debugViewRatio.width += 0.1; break;
-		case OF_KEY_DEL: debugViewRatio.width -= 0.1; break;*/
-
-
+		case OF_KEY_RIGHT_ALT: debugViewRatio.height += 0.05; break;
+		case OF_KEY_RIGHT_CONTROL: debugViewRatio.height -= 0.05; break;
+		case OF_KEY_LEFT_CONTROL: debugViewRatio.width += 0.05; break;
+		case OF_KEY_LEFT_ALT: debugViewRatio.width -= 0.05; break;
+			
 		}
 	}
 	// 마우스 제어

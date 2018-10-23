@@ -81,7 +81,12 @@ class ofApp : public ofBaseApp {
 		ofRectangle UI_region[4];
 		int UI_touch_determine;
 		int UI_touch_determine_cnt;
+		int receiveCnt = 0;
+		int dtCheck = 0;
 		
+		/* Map counting */
+		bool mapFirst = true;
+
 		/* Image viewer */
 		int display_img_num;
 

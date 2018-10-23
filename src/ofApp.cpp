@@ -89,7 +89,7 @@ void ofApp::setup() {
 	touch.init(kinect);
 	touch.set();
 	touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
-	
+
 	cout << "bMappingMode = " << bMappingMode << ", bDisplayMode = " << bDisplayMode << ", bTouchMode = " << bTouchMode << ", bVirtualWinodw = " << bVirtualMode << ", bUIMode = " << bUIMode << ", bWarpMode = " << this->b_warpImgDisplay << endl;
 	cout << "touch.bDrawTouchPoint = " << touch.bDrawTouchPoint << ", touch.bDrawTouchDebugView = " << touch.bDrawTouchDebugView << endl;
 
@@ -100,7 +100,7 @@ void ofApp::update() {
 	char *recvText;
 
 	kinect->update();
-	
+
 	if (bMappingMode)
 	{
 		if (b_Mapping)
@@ -122,7 +122,7 @@ void ofApp::update() {
 	/* Pan Tilt update */
 	if (ptSystem.bSceneChange)
 	{
-		if (!bMappingMode)
+		if (/*!bMappingMode*/ bUIMode || bVirtualMode || bDisplayMode)
 		{
 			ptSystem.panAngle = sceneManager.scenes[sceneManager.currentSceneIndex].panAngle;
 			ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
@@ -130,7 +130,7 @@ void ofApp::update() {
 		ptSystem.update(ptSystem.panAngle, ptSystem.tiltAngle);
 		showPanTiltAngle();
 	}
-	
+
 	/* Virtual Window */
 	if (bVirtualMode)
 	{
@@ -149,7 +149,7 @@ void ofApp::update() {
 	/* new touch update */
 	if (bTouchMode)
 	{
-		touch.update();	
+		touch.update();
 	}
 	/* virtual window object moving using the spatial touch */
 	if (bVirtualMode)
@@ -189,7 +189,7 @@ void ofApp::update() {
 		}
 		if (touch_determine > 0)
 		{
-				projMeta->setMovedObjectCoord(
+			projMeta->setMovedObjectCoord(
 				touch_determine,
 				ofPoint(
 					touch.warpedTouchPoint[0].x - projMeta->for_mm_image[touch_determine].img.getWidth() / 2,
@@ -203,10 +203,10 @@ void ofApp::update() {
 	{
 		if (touch.warpedTouchPoint.size() != 0)
 		{
-			for (int i = 0; i < (this->imgWarpManager.mobileNum-1); i++)
+			for (int i = 0; i < (this->imgWarpManager.mobileNum - 1); i++)
 			{
 				if (this->b_warpImgDisplay)
-				{		
+				{
 					UI_region[i].set(
 						this->imgWarpManager.mobileVertices.at(i).vertices[0].x,
 						this->imgWarpManager.mobileVertices.at(i).vertices[0].y,
@@ -240,16 +240,16 @@ void ofApp::update() {
 			int caseNum = UI_touch_determine;
 			UI_touch_determine_cnt = 0;
 			UI_touch_determine = -1;
-			switch (caseNum +1) {
+			switch (caseNum + 1) {
 			case 1: keyPressed('v');
 				tcpText.send(0, "v");
 				break;
 			case 2: keyPressed('1');
 				tcpText.send(0, "1");
 				break;
-			//case 3: keyPressed('4'); break;
-			//case 4:  keyPressed('m'); break;
-			}	
+				//case 3: keyPressed('4'); break;
+				//case 4:  keyPressed('m'); break;
+			}
 		}
 	}
 
@@ -265,7 +265,7 @@ void ofApp::draw() {
 	/* test Virtual Current scene Draw */
 	/*if (testVirtual)
 	{
-		sceneManager.currentScene->draw(true);
+	sceneManager.currentScene->draw(true);
 	}*/
 
 	/* Map mode : mobile commend */
@@ -284,7 +284,7 @@ void ofApp::draw() {
 			cout << "Wrong command" << endl;
 	}
 	/* Table top GUI Draw */
-	if (bUIMode) 
+	if (bUIMode)
 	{
 		sceneManager.currentScene->draw(true);
 		/* Warping Draw */
@@ -301,13 +301,13 @@ void ofApp::draw() {
 		skeletonData->draw();
 		if (bkgd_flag)
 			projMeta->draw(headPos, secondUserHandVec);
-		
+
 		if (this->b_warpImgDisplay)
 		{
 			this->imgVirtual.draw();
 		}
 	}
-	
+
 	/* Map scanning Draw */
 	if (bMappingMode)
 	{
@@ -401,7 +401,7 @@ void ofApp::draw() {
 				keyReleased('r');
 			}
 
-			else if (mobileCommand == "debug") 
+			else if (mobileCommand == "debug")
 			{
 				keyPressed('o');
 			}
@@ -410,7 +410,7 @@ void ofApp::draw() {
 			{
 				keyPressed('x');
 				//keyPressed('o');
-			}			
+			}
 
 			else if (mobileCommand == "uimode")
 			{
@@ -424,13 +424,13 @@ void ofApp::draw() {
 	/* Virtual window touch test */
 	/*if (testVirtual)
 	{
-		iPhone->draw();
-		skeletonData->draw();
+	iPhone->draw();
+	skeletonData->draw();
 
-		if (bkgd_flag)
-			projMeta->draw(headPos, secondUserHandVec);
+	if (bkgd_flag)
+	projMeta->draw(headPos, secondUserHandVec);
 
-		projMeta->drawVirtualObjects();
+	projMeta->drawVirtualObjects();
 	}*/
 	/* Sptial touch Draw */
 	if (bTouchMode)
@@ -473,7 +473,7 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	
+
 	if (sceneManager.currentScene->isTouchable)
 	{
 		if (key == 't' || key == 'T')
@@ -482,7 +482,7 @@ void ofApp::keyPressed(int key) {
 			bTouchMode = !bTouchMode;
 			touch.bTouchStart = false;
 			if (!bTouchMode)
-			{	
+			{
 				touch.bDrawTouchDebugView = false;
 				sceneManager.save();
 			}
@@ -491,11 +491,11 @@ void ofApp::keyPressed(int key) {
 				touch.parameterSetup(touch.minT, touch.maxT, touch.touchPointOffset.x, touch.touchPointOffset.y, touch.touchMinArea, touch.touchMaxArea);
 			}
 		}
-	} 
+	}
 	if (bTouchMode)
 	{
 		touch.keyPressed(key);
-		
+
 		if (key == 'o' || key == 'O')
 		{
 			touch.bDrawTouchDebugView = !touch.bDrawTouchDebugView;
@@ -515,9 +515,8 @@ void ofApp::keyPressed(int key) {
 	{
 		if (key == ' ') {
 			mapScanning.Refresh();
-			ptSystem.update(PAN_DEFAULT, 127);
-			//b_Mapping = !b_Mapping;
 			b_Mapping = true;
+			//b_Mapping = !b_Mapping;
 		}
 	}
 	if (key == 'z' || key == 'Z')
@@ -580,7 +579,7 @@ void ofApp::keyPressed(int key) {
 	//	//ptSystem.tiltAngle = sceneManager.scenes[sceneManager.currentSceneIndex].tiltAngle;
 	//	//cout << "Pan, Tilt : " << ptSystem.panAngle << " , " << ptSystem.tiltAngle << endl;
 	//}
-	
+
 	if (key == 'v' || key == 'V')
 	{
 		touch.clearDT();
@@ -622,6 +621,11 @@ void ofApp::keyPressed(int key) {
 	}
 	if (key == 'm') {
 		//bMappingMode = !bMappingMode;
+		//ptSystem.update(PAN_DEFAULT, 127);
+		ptSystem.bSceneChange = true;
+		ptSystem.panAngle = PAN_DEFAULT;
+		//ptSystem.tiltAngle = TILT_DEFAULT;
+		ptSystem.tiltAngle = 127;
 		bMappingMode = true;
 		bDisplayMode = false;
 		bUIMode = false;
@@ -726,7 +730,7 @@ void ofApp::mouseMoved(int x, int y) {
 	if (this->imgWarpingStart)
 	{
 		this->imgWarpManager.mouseMoved(x, y);
-		this->imgViewer.mouseMoved(x,y);
+		this->imgViewer.mouseMoved(x, y);
 		this->imgVirtual.mouseMoved(x, y);
 	}
 }
@@ -832,7 +836,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 		auto now = ofGetElapsedTimeMillis();
 		if (button == 0)
 		{
-			if (now - last < 500)
+			if (now - last < 100)
 			{
 				viewer.rotate(-viewer.getOrientationEuler().x, viewer.getXAxis());
 			}
@@ -1026,6 +1030,8 @@ void ofApp::showSUIInfo() {
 	ofDrawBitmapString("Depth touch Max: " + ofToString(touch.maxT), 200, 920);
 	ofDrawBitmapString("Depth touch Area Min: " + ofToString(touch.touchMinArea), 200, 940);
 	ofDrawBitmapString("Depth touch Area Max: " + ofToString(touch.touchMaxArea), 200, 960);
+	ofDrawBitmapString("debugViewRatio width: " + ofToString(touch.debugViewRatio.width), 600, 940);
+	ofDrawBitmapString("debugViewRatio height: " + ofToString(touch.debugViewRatio.height), 600, 960);
 	if (touch.bTouchStart && bUIMode)
 	{
 		ofDrawBitmapString("Selected object: " + ofToString(UI_touch_determine), 200, 980);
