@@ -434,7 +434,10 @@ void ofApp::draw() {
 				keyPressed('u');
 			}
 
-
+			else if (mobileCommand == "mapRefresh")
+			{
+				keyPressed('n');
+			}
 		}
 	}
 
