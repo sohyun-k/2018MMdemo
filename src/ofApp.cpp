@@ -113,8 +113,8 @@ void ofApp::update() {
 			{
 				b_Mapping = false;
 				ptSystem.bSceneChange = false;
-
 				bReadyToReceive = true;
+				mapFirst = false;
 			}
 		}
 	}
@@ -514,9 +514,14 @@ void ofApp::keyPressed(int key) {
 	if (bMappingMode)
 	{
 		if (key == ' ') {
-			mapScanning.Refresh();
 			b_Mapping = true;
-			//b_Mapping = !b_Mapping;
+		}
+		if (key == 'n') {
+			mapScanning.Refresh();
+			mapFirst = true;
+			ptSystem.bSceneChange = true;
+			ptSystem.panAngle = PAN_DEFAULT;
+			ptSystem.tiltAngle = TILT_DEFAULT;
 		}
 	}
 	if (key == 'z' || key == 'Z')
@@ -622,10 +627,12 @@ void ofApp::keyPressed(int key) {
 	if (key == 'm') {
 		//bMappingMode = !bMappingMode;
 		//ptSystem.update(PAN_DEFAULT, 127);
-		ptSystem.bSceneChange = true;
-		ptSystem.panAngle = PAN_DEFAULT;
-		//ptSystem.tiltAngle = TILT_DEFAULT;
-		ptSystem.tiltAngle = 127;
+		if (mapFirst)
+		{
+			ptSystem.bSceneChange = true;
+			ptSystem.panAngle = PAN_DEFAULT;
+			ptSystem.tiltAngle = TILT_DEFAULT;
+		}
 		bMappingMode = true;
 		bDisplayMode = false;
 		bUIMode = false;
