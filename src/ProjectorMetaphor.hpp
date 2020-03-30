@@ -137,17 +137,17 @@ public:
 
 		}				
 
-		//bkgd_video.draw(0, 0, 1920, 1080);
+		//bkgd_video.draw(0, 0, 1920, 1080);z
 
 		ofPushStyle();
 		
 		ofSetColor(255, 0, 0);
 		ofSetLineWidth(3);
 
-		ofDrawLine(
-			ofPoint(0, decision_boundary), 
-			ofPoint(ofGetWindowWidth(), decision_boundary)
-		);
+		//ofDrawLine(
+		//	ofPoint(0, decision_boundary), 
+		//	ofPoint(ofGetWindowWidth(), decision_boundary)
+		//);
 
 		ofPopStyle();
 
